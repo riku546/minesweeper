@@ -17,9 +17,13 @@
 
 .board {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   width: 270px;
   height: 270px;
+}
+
+.row {
+  display: flex;
 }
 
 .cell {

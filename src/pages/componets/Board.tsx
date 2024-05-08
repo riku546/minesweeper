@@ -3,7 +3,7 @@ import styles from '../index.module.css';
 import { clickHandler } from '../fuctions/clickHandler';
 
 
-const Board = ({bombMap }) => {
+const Board = ({bombMap  }) => {
 
 
 
@@ -14,7 +14,7 @@ const Board = ({bombMap }) => {
         {bombMap.map((row, rowIndex) => (
           <div key={rowIndex} className={styles.row}>
             {row.map((cell, cellIndex) => (
-              <div key={cellIndex} className={styles.cell} onClick={clickHandler} onContextMenu={()=>console.log("右クリック")}>
+              <div key={cellIndex} className={styles.cell} onClick={()=>clickHandler(rowIndex , cellIndex)} onContextMenu={()=>console.log("右クリック")}>
                 {cell}
               </div>
             ))}

@@ -1,8 +1,9 @@
 import React from 'react'
 import styles from '../index.module.css';
+import { clickHandler } from '../fuctions/clickHandler';
 
 
-const Board = ({bombMap , clickHandler}) => {
+const Board = ({bombMap }) => {
 
 
 
@@ -13,7 +14,7 @@ const Board = ({bombMap , clickHandler}) => {
         {bombMap.map((row, rowIndex) => (
           <div key={rowIndex} className={styles.row}>
             {row.map((cell, cellIndex) => (
-              <div key={cellIndex} className={styles.cell} onClick={clickHandler}>
+              <div key={cellIndex} className={styles.cell} onClick={clickHandler} onContextMenu={()=>console.log("右クリック")}>
                 {cell}
               </div>
             ))}

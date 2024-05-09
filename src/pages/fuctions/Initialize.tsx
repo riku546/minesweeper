@@ -31,11 +31,9 @@ export const initializeBoard = (bombMap  ) => {
     const Cellrandom = Math.floor(Math.random() * 9);
     Nums.push([Rowrandom, Cellrandom]);
   }
-  console.log(Nums)
   Nums.map((row) => {
     newBombBoard[row[0]][row[1]] = 8;
   });
-  // console.log(newBombBoard)
 
 
 
@@ -66,6 +64,8 @@ export const initializeBoard = (bombMap  ) => {
         newBombBoard[rowIndex][cellIndex] = cell;
       });
     });
+
+    return newBombBoard
 
 
 };

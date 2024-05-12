@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 import styles from './index.module.css';
 import Board from './componets/Board';
-import MatchInfo from './componets/MatchInfo';
 import { initializeBoard } from './fuctions/Initialize';
-import { clickHandler } from './fuctions/clickHandler';
 
 const Home = () => {
   const [isFirstClick , setIsFirstClick] = useState(false)
-  const [bombMap, setBombMap] = useState([
+  const initBombBoard = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -17,7 +15,8 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ]);
+  ]
+  const [bombMap, setBombMap] = useState(initBombBoard);
 
   const [userInputs, setUserInputs] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -34,11 +33,15 @@ const Home = () => {
 
 
   useEffect(() => {
-    const i = initializeBoard(bombMap)
-    setBombMap(i)
+    // const initBoard = initializeBoard(bombMap)
+    // setBombMap(initBoard)
     setIsFirstClick(true)
 
+    return () =>{
+      setIsFirstClick(false)
+      // setBombMap(initBombBoard)
 
+    }
 
 
   }, []);
@@ -48,8 +51,8 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
-      <MatchInfo />
-      <Board bombMap={bombMap} isFirstClick={isFirstClick}  setIsFirstClick={setIsFirstClick} userInputs={userInputs} setUserInputs={setUserInputs} />
+
+      <Board bombMap={bombMap} setBombMap={setBombMap} isFirstClick={isFirstClick}  setIsFirstClick={setIsFirstClick} userInputs={userInputs} setUserInputs={setUserInputs} />
     </div>
   );
 };

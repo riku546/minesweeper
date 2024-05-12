@@ -1,6 +1,5 @@
-import { count } from "console";
 
-export const initializeBoard = (bombMap  ) => {
+export const initializeBoard = (bombMap:number[][] , setBombMap) => {
   const countBombBoard = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -65,7 +64,7 @@ export const initializeBoard = (bombMap  ) => {
       });
     });
 
-    return newBombBoard
+   setBombMap(newBombBoard)
 
 
 };

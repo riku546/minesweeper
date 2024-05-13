@@ -1,6 +1,5 @@
-import { count } from "console";
 
-export const initializeBoard = (bombMap  ) => {
+export const initializeBoard = (bombMap :number[][] ) => {
   const countBombBoard = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -37,8 +36,8 @@ export const initializeBoard = (bombMap  ) => {
 
 
 
-    newBombBoard.map((row, rowIndex) => {
-      row.map((cell, cellIndex) => {
+    newBombBoard.map((row : number[], rowIndex:number) => {
+      row.map((cell:number, cellIndex:number) => {
         if (cell === 8) return;
         let count = 0;
         direction.map((d) => {

@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from '../index.module.css';
-import { clickHandler } from '../fuctions/clickHandler';
 
 const Board = ({ bombMap, isFirstClick, setIsFirstClick, userInputs, setUserInputs }) => {
   const clickHandler = (rowIndex: number, cellIndex: number) => {
@@ -16,14 +15,16 @@ const Board = ({ bombMap, isFirstClick, setIsFirstClick, userInputs, setUserInpu
     setIsFirstClick(false);
     newUserInputs[rowIndex][cellIndex] = bombMap[rowIndex][cellIndex];
     setUserInputs(newUserInputs);
+    
+
   };
 
   return (
     <>
       <div className={styles.board}>
-        {userInputs.map((row, rowIndex) => (
+        {userInputs.map((row : number[], rowIndex: number) => (
           <div key={rowIndex} className={styles.row}>
-            {row.map((cell, cellIndex) => (
+            {row.map((cell: number, cellIndex: number) => (
               <div
                 key={rowIndex - cellIndex}
                 className={styles.cell}

@@ -3,7 +3,6 @@ import styles from './index.module.css';
 import Board from './componets/Board';
 import MatchInfo from './componets/MatchInfo';
 import { initializeBoard } from './fuctions/Initialize';
-import { clickHandler } from './fuctions/clickHandler';
 
 const Home = () => {
   const [isFirstClick , setIsFirstClick] = useState(false)

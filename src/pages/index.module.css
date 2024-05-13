@@ -35,3 +35,9 @@
   background-color: gray;
   border: 1px solid;
 }
+
+
+.matchInfos{
+  display: flex;
+  gap: 20px;
+}

@@ -1,5 +1,5 @@
-
-export const initializeBoard = (bombMap :number[][] ) => {
+import { direction } from "../direction";
+export const initializeBoard = (bombMap:number[][] , setBombMap) => {
   const countBombBoard = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -12,16 +12,7 @@ export const initializeBoard = (bombMap :number[][] ) => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
   ];
 
-  const direction = [
-    [-1, 0],
-    [-1, 1],
-    [0, 1],
-    [1, 1],
-    [1, 0],
-    [1, -1],
-    [0, -1],
-    [-1, -1],
-  ];
+
   const newBombBoard = [...bombMap];
   const Nums = [];
 
@@ -64,7 +55,7 @@ export const initializeBoard = (bombMap :number[][] ) => {
       });
     });
 
-    return newBombBoard
+   setBombMap(newBombBoard)
 
 
 };

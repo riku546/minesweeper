@@ -13,6 +13,7 @@ const Board = ({
 }) => {
   const [timeCount, setTimeCount] = useState(0);
   const [bombLength, setBombLength] = useState(10);
+  const results: number[][] = [];
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
     initializeBoard(bombMap, setBombMap);
@@ -37,9 +38,16 @@ const Board = ({
     }
 
     if (bombMap[rowIndex][cellIndex] === 0) {
-      const result = openEmptySquare(direction, rowIndex, cellIndex);
-      console.log(bombMap)
-      console.log(result);
+      results.push([rowIndex, cellIndex]);
+      openEmptySquare(direction, rowIndex, cellIndex);
+      console.log(bombMap);
+      console.log(results);
+
+      for (const count of results) {
+        console.log(count)
+        newUserInputs[count[0]][count[1]] = 100;
+      }
+      setUserInputs(newUserInputs);
     }
 
     setIsFirstClick(false);
@@ -48,37 +56,29 @@ const Board = ({
   };
 
   const openEmptySquare = (direction: number[][], rowIndex: number, cellIndex: number) => {
-    const results: number[][] = []
+    const temporaryResult: number[][] = [];
+    direction.map((row) => {
+      const y = rowIndex + row[1];
+      const x = cellIndex + row[0];
 
-    const checkEmptySquare = () =>{
+      if (x < 0 || x > 8) return;
+      if (y < 0 || y > 8) return;
 
-      const temporaryResult: number[][] = [];
-      direction.map((row) => {
-        const y = rowIndex + row[1];
-        const x = cellIndex + row[0];
+      if (bombMap[y][x] === 0 && !results.some(([r, c]) => r === y && c === x)) {
+        temporaryResult.push([y, x]);
+        results.push([y, x]);
+      }
+    });
 
-        if (x < 0 || x > 8) return;
-        if (y < 0 || y > 8) return;
+    if (temporaryResult.length === 0) return;
+    const CopyTemporaryResults = [...temporaryResult];
 
-        if (bombMap[x][y] === 0) {
-          temporaryResult.push([y, x]);
-
-        }
-      });
-      return temporaryResult
-    }
-
-    while (true){
-      const result = checkEmptySquare()
-      
-    }
-
-
-
-
-
-
+    CopyTemporaryResults.map((row: number[]) => {
+      openEmptySquare(direction, row[0], row[1]);
+    });
   };
+
+  // };
 
   const RightClick = (e, rowIndex: number, cellIndex: number) => {
     e.preventDefault();

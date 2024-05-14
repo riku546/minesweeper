@@ -16,6 +16,8 @@ const Board = ({
   const results: number[][] = [];
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
+
+    console.log(bombMap)
     initializeBoard(bombMap, setBombMap);
 
     const newUserInputs = [...userInputs];
@@ -37,20 +39,58 @@ const Board = ({
       });
     }
 
+    setIsFirstClick(false);
+
     if (bombMap[rowIndex][cellIndex] === 0) {
       results.push([rowIndex, cellIndex]);
       openEmptySquare(direction, rowIndex, cellIndex);
-      console.log(bombMap);
-      console.log(results);
 
+      const tL = []
       for (const count of results) {
-        console.log(count)
         newUserInputs[count[0]][count[1]] = 100;
+
+
+
       }
+      console.log(newUserInputs)
+      newUserInputs.map((row , rowIndex)=>{
+        row.map((i , index)=>{
+          if(i === 100){
+            direction.map((row)=>{
+              const x = index + row[0]
+              const y = rowIndex + row[1]
+              if (x < 0 || x > 8) return;
+              if (y < 0 || y > 8) return;
+
+              if( bombMap[y][x] === 8  || bombMap[y][x] === 0 ){
+                return
+              }
+              tL.push([y , x])
+
+
+
+            })
+          }
+        })
+      })
+
+
+
+
+
+      for (const t of tL){
+        console.log(t)
+        if(newUserInputs[t[0]][t[1]] === 100) break;
+        newUserInputs[t[0]][t[1]] = bombMap[t[0]][t[1]]
+      }
+
+
+
+      console.log(newUserInputs)
       setUserInputs(newUserInputs);
+      return;
     }
 
-    setIsFirstClick(false);
     newUserInputs[rowIndex][cellIndex] = bombMap[rowIndex][cellIndex];
     setUserInputs(newUserInputs);
   };
@@ -92,6 +132,7 @@ const Board = ({
     <>
       <div className={styles.matchInfos}>
         <div>bomb: {bombLength}</div>
+        <div><button onClick={()=> window.location.reload()}>Reload</button></div>
         <div>time: {timeCount}</div>
       </div>
       <div className={styles.board}>

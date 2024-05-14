@@ -15,9 +15,19 @@ const Board = ({
   const [bombLength, setBombLength] = useState(10);
   const results: number[][] = [];
 
-  const clickHandler = (rowIndex: number, cellIndex: number) => {
+  const timer = () =>{
+    if(isFirstClick === true){
 
-    console.log(bombMap)
+      new Promise(() => {
+        setInterval(() => {
+          setTimeCount((prev) => prev + 1);
+        }, 1000);
+      })
+      setIsFirstClick(false)
+    }
+  }
+
+  const clickHandler = (rowIndex: number, cellIndex: number) => {
     initializeBoard(bombMap, setBombMap);
 
     const newUserInputs = [...userInputs];
@@ -31,13 +41,6 @@ const Board = ({
       return;
     }
 
-    if (isFirstClick === true) {
-      new Promise(() => {
-        setInterval(() => {
-          setTimeCount((prev) => prev + 1);
-        }, 1000);
-      });
-    }
 
     setIsFirstClick(false);
 
@@ -45,48 +48,36 @@ const Board = ({
       results.push([rowIndex, cellIndex]);
       openEmptySquare(direction, rowIndex, cellIndex);
 
-      const tL = []
+      const tL = [];
       for (const count of results) {
         newUserInputs[count[0]][count[1]] = 100;
-
-
-
       }
-      console.log(newUserInputs)
-      newUserInputs.map((row , rowIndex)=>{
-        row.map((i , index)=>{
-          if(i === 100){
-            direction.map((row)=>{
-              const x = index + row[0]
-              const y = rowIndex + row[1]
+      console.log(newUserInputs);
+      newUserInputs.map((row, rowIndex) => {
+        row.map((i, index) => {
+          if (i === 100) {
+            direction.map((row) => {
+              const x = index + row[0];
+              const y = rowIndex + row[1];
               if (x < 0 || x > 8) return;
               if (y < 0 || y > 8) return;
 
-              if( bombMap[y][x] === 8  || bombMap[y][x] === 0 ){
-                return
+              if (bombMap[y][x] === 8 || bombMap[y][x] === 0) {
+                return;
               }
-              tL.push([y , x])
-
-
-
-            })
+              tL.push([y, x]);
+            });
           }
-        })
-      })
+        });
+      });
 
-
-
-
-
-      for (const t of tL){
-        console.log(t)
-        if(newUserInputs[t[0]][t[1]] === 100) break;
-        newUserInputs[t[0]][t[1]] = bombMap[t[0]][t[1]]
+      for (const t of tL) {
+        console.log(t);
+        if (newUserInputs[t[0]][t[1]] === 100) break;
+        newUserInputs[t[0]][t[1]] = bombMap[t[0]][t[1]];
       }
 
-
-
-      console.log(newUserInputs)
+      console.log(newUserInputs);
       setUserInputs(newUserInputs);
       return;
     }
@@ -122,6 +113,9 @@ const Board = ({
 
   const RightClick = (e, rowIndex: number, cellIndex: number) => {
     e.preventDefault();
+
+
+
     setBombLength((prev) => prev - 1);
     const newUserInputs = [...userInputs];
     newUserInputs[rowIndex][cellIndex] = 20;
@@ -132,7 +126,11 @@ const Board = ({
     <>
       <div className={styles.matchInfos}>
         <div>bomb: {bombLength}</div>
-        <div><button onClick={()=> window.location.reload()}>Reload</button></div>
+        <div
+          className={styles.restartButton}
+          style={{ backgroundPosition: '-360px' }}
+          onClick={() => window.location.reload()}
+        />
         <div>time: {timeCount}</div>
       </div>
       <div className={styles.board}>
@@ -144,6 +142,7 @@ const Board = ({
                 className={styles.cell}
                 onClick={() => clickHandler(rowIndex, cellIndex)}
                 onContextMenu={(e) => RightClick(e, rowIndex, cellIndex)}
+                onMouseDown={() =>timer() }
               >
                 {<div>{cell !== 0 && cell}</div>}
               </div>

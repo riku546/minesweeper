@@ -15,20 +15,21 @@ const Board = ({
   const [bombLength, setBombLength] = useState(10);
   const results: number[][] = [];
 
-  const timer = () =>{
-    if(isFirstClick === true){
 
+  const timer = () => {
+    if (isFirstClick === true) {
       new Promise(() => {
         setInterval(() => {
           setTimeCount((prev) => prev + 1);
         }, 1000);
-      })
-      setIsFirstClick(false)
+      });
     }
-  }
+  };
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
-    initializeBoard(bombMap, setBombMap);
+    if (isFirstClick === true) {
+      initializeBoard(bombMap, setBombMap , userInputs , setUserInputs , isFirstClick);
+    }
 
     const newUserInputs = [...userInputs];
 
@@ -41,7 +42,6 @@ const Board = ({
       return;
     }
 
-
     setIsFirstClick(false);
 
     if (bombMap[rowIndex][cellIndex] === 0) {
@@ -52,7 +52,6 @@ const Board = ({
       for (const count of results) {
         newUserInputs[count[0]][count[1]] = 100;
       }
-      console.log(newUserInputs);
       newUserInputs.map((row, rowIndex) => {
         row.map((i, index) => {
           if (i === 100) {
@@ -72,12 +71,10 @@ const Board = ({
       });
 
       for (const t of tL) {
-        console.log(t);
         if (newUserInputs[t[0]][t[1]] === 100) break;
         newUserInputs[t[0]][t[1]] = bombMap[t[0]][t[1]];
       }
 
-      console.log(newUserInputs);
       setUserInputs(newUserInputs);
       return;
     }
@@ -114,8 +111,6 @@ const Board = ({
   const RightClick = (e, rowIndex: number, cellIndex: number) => {
     e.preventDefault();
 
-
-
     setBombLength((prev) => prev - 1);
     const newUserInputs = [...userInputs];
     newUserInputs[rowIndex][cellIndex] = 20;
@@ -142,7 +137,7 @@ const Board = ({
                 className={styles.cell}
                 onClick={() => clickHandler(rowIndex, cellIndex)}
                 onContextMenu={(e) => RightClick(e, rowIndex, cellIndex)}
-                onMouseDown={() =>timer() }
+                onMouseDown={() => timer()}
               >
                 {<div>{cell !== 0 && cell}</div>}
               </div>

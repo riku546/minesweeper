@@ -11,6 +11,8 @@ const Home = () => {
     { name: 'カスタム', level: 'custome', bombLength: 0, rowLength: 30, columnLength: 30 },
   ]);
 
+  const [levelsRowIndex , setLevelsRowIndex] = useState(0)
+
   const [bombMap, setBombMap] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -35,37 +37,48 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  const board: number[][] = [];
+  const [countBombBoard , setCountBombBoard] = useState([
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ])
 
-  const createBoard = (rowIndex) =>{
-    const boards =[]
-    const board = []
-    for (let i = 0 ; i < levels[rowIndex].columnLength  ; i++){
-      board.push(0)
+
+
+  const createBoard = (rowIndex:number) => {
+    const boards = [];
+    const board = [];
+    for (let i = 0; i < levels[rowIndex].columnLength; i++) {
+      board.push(0);
     }
 
-    for (let i = 0; i < levels[rowIndex].rowLength ; i++){
-      boards.push(board)
+    for (let i = 0; i < levels[rowIndex].rowLength; i++) {
+      boards.push(board);
     }
-    console.log(boards)
-    setBombMap(boards)
-    setUserInputs(boards)
 
-  }
+    setBombMap(boards);
+    setUserInputs(boards);
+    setCountBombBoard(boards);
+    setLevelsRowIndex(rowIndex)
+  };
 
-
-  const changeLevel = (rowIndex:number) =>{
-    console.log(levels[rowIndex])
-    createBoard(rowIndex)
-  }
+  const changeLevel = (rowIndex: number) => {
+    createBoard(rowIndex);
+  };
 
   return (
     <>
       <div>
-        <div style={{ display: 'flex', gap:20 , justifyContent:"center" }}>
-          {levels.map((row ,rowIndex) => {
+        <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>
+          {levels.map((row, rowIndex) => {
             return (
-              <p onClick={() => changeLevel(rowIndex)} key={row.name} >
+              <p onClick={() => changeLevel(rowIndex)} key={row.name}>
                 {row.name}
               </p>
             );
@@ -80,6 +93,9 @@ const Home = () => {
           setIsFirstClick={setIsFirstClick}
           userInputs={userInputs}
           setUserInputs={setUserInputs}
+          levels={levels}
+          countBombBoard = {countBombBoard}
+          levelsRowIndex={levelsRowIndex}
         />
       </div>
     </>

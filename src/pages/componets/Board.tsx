@@ -10,6 +10,9 @@ const Board = ({
   setIsFirstClick,
   userInputs,
   setUserInputs,
+  levels,
+  countBombBoard,
+  levelsRowIndex
 }) => {
   const [timeCount, setTimeCount] = useState(0);
   const [bombLength, setBombLength] = useState(10);
@@ -28,7 +31,7 @@ const Board = ({
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
     if (isFirstClick === true) {
-      initializeBoard(bombMap, setBombMap , userInputs , setUserInputs , isFirstClick);
+      initializeBoard(bombMap, setBombMap , userInputs , setUserInputs , isFirstClick , levels , countBombBoard , levelsRowIndex);
     }
 
     const newUserInputs = [...userInputs];
@@ -123,7 +126,7 @@ const Board = ({
         <div>bomb: {bombLength}</div>
         <div
           className={styles.restartButton}
-          style={{ backgroundPosition: '-360px' }}
+          style={{ backgroundPosition: '-330px' }}
           onClick={() => window.location.reload()}
         />
         <div>time: {timeCount}</div>

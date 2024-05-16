@@ -8,6 +8,8 @@
   padding: 0 0.5rem;
 }
 
+
+
 /* .sampleStyle{
   width: 30px;
   height: 30px;
@@ -18,8 +20,7 @@
 .board {
   display: flex;
   flex-direction: column;
-  width: 270px;
-  height: 270px;
+
 }
 
 .row {

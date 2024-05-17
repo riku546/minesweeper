@@ -1,30 +1,32 @@
 import { direction } from '../direction';
 export const initializeBoard = (
   bombMap: number[][],
-  setBombMap:number[][],
+  setBombMap,
   userInputs: number[][],
-  setUserInputs:number[][],
-  isFirstClick:boolean,
+  setUserInputs,
+  isFirstClick: boolean,
   levels,
-  countBombBoard:number[][],
+  countBombBoard: number[][],
   levelsRowIndex: number,
+  rowIndex: number,
+  cellIndex: number,
 ) => {
-
-  const newCountBombBoard = [...countBombBoard]
+  const newCountBombBoard = [...countBombBoard];
   const newBombBoard = [...bombMap];
-  const Nums = [];
+  const Nums: number[][] = [];
 
-  for (let i = 0; i < levels[levelsRowIndex].bombLength; i++) {
+  while (Nums.length < 10) {
     const Rowrandom = Math.floor(Math.random() * levels[levelsRowIndex].rowLength);
     const Cellrandom = Math.floor(Math.random() * levels[levelsRowIndex].columnLength);
+    if (rowIndex === Rowrandom && cellIndex === Cellrandom) continue;
+    if (Nums.some(([y, x]) => y === Rowrandom && x === Cellrandom)) continue;
+
     Nums.push([Rowrandom, Cellrandom]);
   }
-  console.log(Nums)
+
   Nums.map((row) => {
     newCountBombBoard[row[0]][row[1]] = 8;
   });
-  console.log(newCountBombBoard)
-
 
   newCountBombBoard.map((row: number[], rowIndex: number) => {
     row.map((cell: number, cellIndex: number) => {
@@ -34,7 +36,7 @@ export const initializeBoard = (
         const x = cellIndex + d[0];
         const y = rowIndex + d[1];
         if (x < 0 || x > levels[levelsRowIndex].columnLength - 1) return;
-        if (y < 0 || y > levels[levelsRowIndex]. rowLength - 1) return;
+        if (y < 0 || y > levels[levelsRowIndex].rowLength - 1) return;
 
         if (newCountBombBoard[y][x] === 0) return;
         if (newCountBombBoard[y][x] === 8) {
@@ -45,12 +47,11 @@ export const initializeBoard = (
     });
   });
 
-  countBombBoard.map((row:number[], rowIndex:number) => {
+  countBombBoard.map((row: number[], rowIndex: number) => {
     row.map((cell, cellIndex) => {
       if (cell === 0) return;
       newBombBoard[rowIndex][cellIndex] = cell;
     });
   });
-  console.log(newBombBoard)
   setBombMap(newBombBoard);
 };

@@ -18,9 +18,6 @@ const Board = ({
   const [bombLength, setBombLength] = useState(10);
   const results: number[][] = [];
 
-
-
-
   const timer = () => {
     if (isFirstClick === true) {
       new Promise(() => {
@@ -31,10 +28,27 @@ const Board = ({
     }
   };
 
-  const clickHandler = (rowIndex: number, cellIndex: number) => {
-    console.log()
-    if (isFirstClick === true) {
+  const checkFinish = (bombMap: number[][], userInputs: number[][], countBombBoard: number[][]) => {
+    // const indexs: number[][] = [];
+    // bombMap.map((row: number[], rowIndex: number) => {
+    //   row.map((cell, cellIndex) => {
+    //     if (cell === 8) {
+    //       indexs.push([rowIndex, cellIndex]);
+    //     }
+    //   });
+    // });
+    const checkList = (userInputs.flat().filter(cell=> cell === 0))
+    if(!checkList.length) {
+      alert("finish")
 
+    }
+
+  };
+
+  const clickHandler = (rowIndex: number, cellIndex: number) => {
+    console.log(bombMap)
+    checkFinish(bombMap, userInputs, countBombBoard);
+    if (isFirstClick === true) {
       initializeBoard(
         bombMap,
         setBombMap,
@@ -44,11 +58,12 @@ const Board = ({
         levels,
         countBombBoard,
         levelsRowIndex,
+        rowIndex,
+        cellIndex
       );
     }
 
     const newUserInputs = [...userInputs];
-
 
     if (isFirstClick === true && bombMap[rowIndex][cellIndex] === 8) {
       window.location.reload();
@@ -75,8 +90,8 @@ const Board = ({
             direction.map((row) => {
               const x = index + row[0];
               const y = rowIndex + row[1];
-              if (x < 0 || x > levels[levelsRowIndex].columnLength -1) return;
-              if (y < 0 || y > levels[levelsRowIndex].rowLength -1) return;
+              if (x < 0 || x > levels[levelsRowIndex].columnLength - 1) return;
+              if (y < 0 || y > levels[levelsRowIndex].rowLength - 1) return;
 
               if (bombMap[y][x] === 8 || bombMap[y][x] === 0) {
                 return;
@@ -106,8 +121,8 @@ const Board = ({
       const y = rowIndex + row[1];
       const x = cellIndex + row[0];
 
-      if (x < 0 || x > levels[levelsRowIndex].columnLength -1) return;
-      if (y < 0 || y > levels[levelsRowIndex].rowLength -1) return;
+      if (x < 0 || x > levels[levelsRowIndex].columnLength - 1) return;
+      if (y < 0 || y > levels[levelsRowIndex].rowLength - 1) return;
 
       if (bombMap[y][x] === 0 && !results.some(([r, c]) => r === y && c === x)) {
         temporaryResult.push([y, x]);
@@ -123,30 +138,26 @@ const Board = ({
     });
   };
 
-
-
   const RightClick = (e, rowIndex: number, cellIndex: number) => {
-
     e.preventDefault();
-    console.log(isFirstClick)
-    let count = 0
+    console.log(isFirstClick);
+    let count = 0;
     const newUserInputs = [...userInputs];
-    if(newUserInputs[rowIndex][cellIndex] === 20){
-      newUserInputs[rowIndex][cellIndex] = 0
-    }else{
+    if (newUserInputs[rowIndex][cellIndex] === 20) {
+      newUserInputs[rowIndex][cellIndex] = 0;
+    } else {
       newUserInputs[rowIndex][cellIndex] = 20;
-
     }
 
     setUserInputs(newUserInputs);
-    for (const row of newUserInputs){
-      for(const cell of row){
-        if(cell === 20){
-          count++
+    for (const row of newUserInputs) {
+      for (const cell of row) {
+        if (cell === 20) {
+          count++;
         }
       }
     }
-    setBombLength(10 - count)
+    setBombLength(10 - count);
   };
 
   return (

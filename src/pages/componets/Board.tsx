@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../index.module.css';
 import { direction } from '../direction';
 
@@ -28,26 +28,33 @@ const Board = ({
     }
   };
 
-  const checkFinish = (bombMap: number[][], userInputs: number[][], countBombBoard: number[][]) => {
-    // const indexs: number[][] = [];
-    // bombMap.map((row: number[], rowIndex: number) => {
-    //   row.map((cell, cellIndex) => {
-    //     if (cell === 8) {
-    //       indexs.push([rowIndex, cellIndex]);
-    //     }
-    //   });
-    // });
-    const checkList = (userInputs.flat().filter(cell=> cell === 0))
-    if(!checkList.length) {
-      alert("finish")
+  useEffect(() => {
+    console.log(bombMap);
+    const bombPostionList: number[][] = [];
+    const checkList: number[] = [];
+    bombMap.map((row: number[], rowIndex: number) => {
+      row.map((cell, cellIndex) => {
+        if (cell === 8) {
+          bombPostionList.push([rowIndex, cellIndex]);
+        }
+      });
+    });
 
+    userInputs.map((row: number[], rowIndex: number) => {
+      row.map((cell, cellIndex) => {
+        if (bombPostionList.some(([y, x]) => y === rowIndex && x === cellIndex)) return;
+        if (cell === 0) {
+          checkList.push(cell);
+        }
+      });
+    });
+    console.log(checkList);
+    if (checkList.length === 0) {
+      alert('finish');
     }
-
-  };
+  }, [userInputs]);
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
-    console.log(bombMap)
-    checkFinish(bombMap, userInputs, countBombBoard);
     if (isFirstClick === true) {
       initializeBoard(
         bombMap,
@@ -59,7 +66,7 @@ const Board = ({
         countBombBoard,
         levelsRowIndex,
         rowIndex,
-        cellIndex
+        cellIndex,
       );
     }
 
@@ -181,8 +188,21 @@ const Board = ({
                 onClick={() => clickHandler(rowIndex, cellIndex)}
                 onContextMenu={(e) => RightClick(e, rowIndex, cellIndex)}
                 onMouseDown={() => timer()}
+                style={{
+                  borderColor: cell === 0 ? '#fff #7f7f7f #7f7f7f #fff' : '',
+                  borderWidth: cell === 0 ? 4 : '1.5px',
+                }}
               >
-                {<div>{cell !== 0 && cell}</div>}
+                {
+                  <div
+                    className={styles.imageStyle}
+                    style={{
+                      visibility: cell === 0 ? 'hidden' : 'visible',
+                      backgroundPosition:
+                        cell === 0 ? `-1000px -1000px ` : `${-30 * (cell - 1)}px ,0px `,
+                    }}
+                  />
+                }
               </div>
             ))}
           </div>

@@ -15,7 +15,7 @@ export const initializeBoard = (
   const newBombBoard = [...bombMap];
   const Nums: number[][] = [];
 
-  while (Nums.length < 10) {
+  while (Nums.length < levels[levelsRowIndex].bombLength) {
     const Rowrandom = Math.floor(Math.random() * levels[levelsRowIndex].rowLength);
     const Cellrandom = Math.floor(Math.random() * levels[levelsRowIndex].columnLength);
     if (rowIndex === Rowrandom && cellIndex === Cellrandom) continue;

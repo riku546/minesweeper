@@ -8,19 +8,16 @@
   padding: 0 0.5rem;
 }
 
-
-
-/* .sampleStyle{
+.imageStyle {
+  box-sizing: border-box;
   width: 30px;
   height: 30px;
-  background: url("~/src/assets/images/icons.png");
-
-} */
+  background: url('~/src/assets/images/icons.png') no-repeat;
+}
 
 .board {
   display: flex;
   flex-direction: column;
-
 }
 
 .row {
@@ -33,7 +30,7 @@
   justify-content: center;
   width: 30px;
   height: 30px;
-  background-color: gray;
+  background-color: #c6c6c6;
   border: 1px solid;
 }
 

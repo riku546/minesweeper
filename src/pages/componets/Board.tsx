@@ -12,11 +12,13 @@ const Board = ({
   setUserInputs,
   levels,
   countBombBoard,
-  levelsRowIndex
+  levelsRowIndex,
 }) => {
   const [timeCount, setTimeCount] = useState(0);
   const [bombLength, setBombLength] = useState(10);
   const results: number[][] = [];
+
+
 
 
   const timer = () => {
@@ -30,11 +32,23 @@ const Board = ({
   };
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
+    console.log()
     if (isFirstClick === true) {
-      initializeBoard(bombMap, setBombMap , userInputs , setUserInputs , isFirstClick , levels , countBombBoard , levelsRowIndex);
+
+      initializeBoard(
+        bombMap,
+        setBombMap,
+        userInputs,
+        setUserInputs,
+        isFirstClick,
+        levels,
+        countBombBoard,
+        levelsRowIndex,
+      );
     }
 
     const newUserInputs = [...userInputs];
+
 
     if (isFirstClick === true && bombMap[rowIndex][cellIndex] === 8) {
       window.location.reload();
@@ -61,8 +75,8 @@ const Board = ({
             direction.map((row) => {
               const x = index + row[0];
               const y = rowIndex + row[1];
-              if (x < 0 || x > 8) return;
-              if (y < 0 || y > 8) return;
+              if (x < 0 || x > levels[levelsRowIndex].columnLength -1) return;
+              if (y < 0 || y > levels[levelsRowIndex].rowLength -1) return;
 
               if (bombMap[y][x] === 8 || bombMap[y][x] === 0) {
                 return;
@@ -92,8 +106,8 @@ const Board = ({
       const y = rowIndex + row[1];
       const x = cellIndex + row[0];
 
-      if (x < 0 || x > 8) return;
-      if (y < 0 || y > 8) return;
+      if (x < 0 || x > levels[levelsRowIndex].columnLength -1) return;
+      if (y < 0 || y > levels[levelsRowIndex].rowLength -1) return;
 
       if (bombMap[y][x] === 0 && !results.some(([r, c]) => r === y && c === x)) {
         temporaryResult.push([y, x]);
@@ -109,15 +123,30 @@ const Board = ({
     });
   };
 
-  // };
+
 
   const RightClick = (e, rowIndex: number, cellIndex: number) => {
-    e.preventDefault();
 
-    setBombLength((prev) => prev - 1);
+    e.preventDefault();
+    console.log(isFirstClick)
+    let count = 0
     const newUserInputs = [...userInputs];
-    newUserInputs[rowIndex][cellIndex] = 20;
+    if(newUserInputs[rowIndex][cellIndex] === 20){
+      newUserInputs[rowIndex][cellIndex] = 0
+    }else{
+      newUserInputs[rowIndex][cellIndex] = 20;
+
+    }
+
     setUserInputs(newUserInputs);
+    for (const row of newUserInputs){
+      for(const cell of row){
+        if(cell === 20){
+          count++
+        }
+      }
+    }
+    setBombLength(10 - count)
   };
 
   return (

@@ -28,6 +28,7 @@ const Board = ({ bombMap,setBombMap, isFirstClick, setIsFirstClick, userInputs, 
       });
     }
 
+
     setIsFirstClick(false);
     newUserInputs[rowIndex][cellIndex] = bombMap[rowIndex][cellIndex];
     setUserInputs(newUserInputs);
@@ -48,6 +49,7 @@ const Board = ({ bombMap,setBombMap, isFirstClick, setIsFirstClick, userInputs, 
     <>
       <div className={styles.matchInfos}>
         <div>bomb:  {bombLength}</div>
+        <button onClick={() => window.location.reload()}>reset</button>
         <div>time:  {timeCount}</div>
       </div>
       <div className={styles.board}>

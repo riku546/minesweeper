@@ -25,12 +25,12 @@ export const initializeBoard = (
   }
 
   Nums.map((row) => {
-    newCountBombBoard[row[0]][row[1]] = 8;
+    newCountBombBoard[row[0]][row[1]] = 11;
   });
 
   newCountBombBoard.map((row: number[], rowIndex: number) => {
     row.map((cell: number, cellIndex: number) => {
-      if (cell === 8) return;
+      if (cell === 11) return;
       let count = 0;
       direction.map((d) => {
         const x = cellIndex + d[0];
@@ -39,7 +39,7 @@ export const initializeBoard = (
         if (y < 0 || y > levels[levelsRowIndex].rowLength - 1) return;
 
         if (newCountBombBoard[y][x] === 0) return;
-        if (newCountBombBoard[y][x] === 8) {
+        if (newCountBombBoard[y][x] === 11) {
           count += 1;
         }
       });

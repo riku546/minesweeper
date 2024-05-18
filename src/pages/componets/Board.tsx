@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect ,useState } from 'react';
 import styles from '../index.module.css';
 import { direction } from '../direction';
+import { levelsObject } from '../boards';
 
 import { initializeBoard } from '../fuctions/Initialize';
 const Board = ({
@@ -13,9 +14,15 @@ const Board = ({
   levels,
   countBombBoard,
   levelsRowIndex,
+  setCountBombBoard,
+  setLevelsRowIndex
+
 }) => {
+
   const [timeCount, setTimeCount] = useState(0);
   const [bombLength, setBombLength] = useState(10);
+
+
   const results: number[][] = [];
 
   const timer = () => {
@@ -28,13 +35,14 @@ const Board = ({
     }
   };
 
+
+
   useEffect(() => {
-    console.log(bombMap);
     const bombPostionList: number[][] = [];
     const checkList: number[] = [];
     bombMap.map((row: number[], rowIndex: number) => {
       row.map((cell, cellIndex) => {
-        if (cell === 8) {
+        if (cell === 11) {
           bombPostionList.push([rowIndex, cellIndex]);
         }
       });
@@ -48,13 +56,13 @@ const Board = ({
         }
       });
     });
-    console.log(checkList);
     if (checkList.length === 0) {
       alert('finish');
     }
   }, [userInputs]);
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
+    console.log(bombMap)
     if (isFirstClick === true) {
       initializeBoard(
         bombMap,
@@ -72,12 +80,17 @@ const Board = ({
 
     const newUserInputs = [...userInputs];
 
-    if (isFirstClick === true && bombMap[rowIndex][cellIndex] === 8) {
-      window.location.reload();
-      return;
-    } else if (isFirstClick === false && bombMap[rowIndex][cellIndex] === 8) {
-      alert('fin');
-      window.location.reload();
+
+    if (isFirstClick === false && bombMap[rowIndex][cellIndex] === 11) {
+      bombMap.map((row:number[] , rowIndex:number)=>{
+        row.map((cell , cellIndex)=>{
+          if(cell === 11){
+            newUserInputs[rowIndex][cellIndex] =11
+          }
+        })
+      })
+      setUserInputs(newUserInputs)
+
       return;
     }
 
@@ -87,11 +100,11 @@ const Board = ({
       results.push([rowIndex, cellIndex]);
       openEmptySquare(direction, rowIndex, cellIndex);
 
-      const tL = [];
+      const tL:number[][] = [];
       for (const count of results) {
         newUserInputs[count[0]][count[1]] = 100;
       }
-      newUserInputs.map((row, rowIndex) => {
+      newUserInputs.map((row:number[], rowIndex:number) => {
         row.map((i, index) => {
           if (i === 100) {
             direction.map((row) => {
@@ -100,7 +113,7 @@ const Board = ({
               if (x < 0 || x > levels[levelsRowIndex].columnLength - 1) return;
               if (y < 0 || y > levels[levelsRowIndex].rowLength - 1) return;
 
-              if (bombMap[y][x] === 8 || bombMap[y][x] === 0) {
+              if (bombMap[y][x] === 11 || bombMap[y][x] === 0) {
                 return;
               }
               tL.push([y, x]);
@@ -150,22 +163,32 @@ const Board = ({
     console.log(isFirstClick);
     let count = 0;
     const newUserInputs = [...userInputs];
-    if (newUserInputs[rowIndex][cellIndex] === 20) {
+    if (newUserInputs[rowIndex][cellIndex] === 10) {
       newUserInputs[rowIndex][cellIndex] = 0;
     } else {
-      newUserInputs[rowIndex][cellIndex] = 20;
+      newUserInputs[rowIndex][cellIndex] = 10;
     }
 
     setUserInputs(newUserInputs);
     for (const row of newUserInputs) {
       for (const cell of row) {
-        if (cell === 20) {
+        if (cell === 10) {
           count++;
         }
       }
     }
     setBombLength(10 - count);
   };
+
+  const resetState = () =>{
+    setIsFirstClick(true)
+    setTimeCount(0)
+    setLevelsRowIndex(0)
+    setBombLength(10)
+    setBombMap(levelsObject[0][0])
+    setUserInputs(levelsObject[0][1])
+    setCountBombBoard(levelsObject[0][2])
+  }
 
   return (
     <>
@@ -174,7 +197,7 @@ const Board = ({
         <div
           className={styles.restartButton}
           style={{ backgroundPosition: '-330px' }}
-          onClick={() => window.location.reload()}
+          onClick={resetState}
         />
         <div>time: {timeCount}</div>
       </div>
@@ -191,6 +214,7 @@ const Board = ({
                 style={{
                   borderColor: cell === 0 ? '#fff #7f7f7f #7f7f7f #fff' : '',
                   borderWidth: cell === 0 ? 4 : '1.5px',
+                  backgroundColor : cell === 11 ? "red" : ""
                 }}
               >
                 {

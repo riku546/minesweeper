@@ -11,6 +11,7 @@ const Home = () => {
     { name: 'custome', level: 'custome', bombLength: 0, rowLength: 30, columnLength: 30 },
   ]);
 
+
   const [levelsRowIndex, setLevelsRowIndex] = useState(0);
   const beginnerBoards1 = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -156,7 +157,7 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ];
 
-  const levelsObject = [
+export const levelsObject = [
     [beginnerBoards1 , beginnerBoards2 , beginnerBoards3],
     [ intermediateBoard1, intermediateBoard2 , intermediateBoard3],
     [advancedBoards1 , advancedBoards2 ,advancedBoards3 ],
@@ -202,6 +203,8 @@ const Home = () => {
           levels={levels}
           countBombBoard={countBombBoard}
           levelsRowIndex={levelsRowIndex}
+          setCountBombBoard={setCountBombBoard}
+          setLevelsRowIndex={setLevelsRowIndex}
         />
       </div>
     </>

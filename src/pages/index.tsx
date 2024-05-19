@@ -49,16 +49,22 @@ const initializeBoard = (
 };
 
 const Home = () => {
-  const levels = [
+  // const levels = [
+  //   { name: 'beginner' , bombLength: 10, rowLength: 9, columnLength: 9 },
+  //   { name: 'intermediate',  bombLength: 40, rowLength: 16, columnLength: 16 },
+  //   { name: 'advanced',  bombLength: 99, rowLength: 16, columnLength: 30 },
+  //   { name: 'custome',  bombLength: 150, rowLength: 30, columnLength: 30 },
+  // ];
+  const[levels , setLevels]  = useState([
     { name: 'beginner' , bombLength: 10, rowLength: 9, columnLength: 9 },
     { name: 'intermediate',  bombLength: 40, rowLength: 16, columnLength: 16 },
     { name: 'advanced',  bombLength: 99, rowLength: 16, columnLength: 30 },
     { name: 'custome',  bombLength: 150, rowLength: 30, columnLength: 30 },
-  ];
+  ])
   const results: number[][] = [];
   const [timeCount, setTimeCount] = useState(0);
   const [bombLength, setBombLength] = useState(10); //計算値にする
-  const [cutomeFormValue , setCutomeFormValue] = useState({height:30 , width:30 , NumOfbomb:150})
+  // const [cutomeFormValue , setCutomeFormValue] = useState({height:30 , width:30 , NumOfbomb:150})
 
   const [levelsRowIndex, setLevelsRowIndex] = useState(0);
   const initBoard = [
@@ -161,7 +167,7 @@ const Home = () => {
     }
 
     if (countBombBoard[rowIndex][cellIndex] === 0) {
-      const tL = [];
+      const tL :number[][] = [];
       results.push([rowIndex, cellIndex]);
       //再帰関数
       openEmptySquare(direction, rowIndex, cellIndex);

@@ -275,13 +275,13 @@ const Home = () => {
             <div style={{display:"flex" , gap:20}}>
 
               <label htmlFor="">
-                height <input type="text"  value={cutomeFormValue.height}/>
+                height <input type="text"  value={levels[3].columnLength}/>
               </label>
               <label htmlFor="">
-                width <input type="text"  value={cutomeFormValue.width}/>
+                width <input type="text"  value={levels[3].rowLength}/>
               </label>
               <label htmlFor="">
-              bombs <input type="text"  value={cutomeFormValue.NumOfbomb}/>
+              bombs <input type="text"  value={levels[3].bombLength}/>
               </label>
               <input type="button"  value="update" />
             </div>

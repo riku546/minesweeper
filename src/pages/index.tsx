@@ -21,6 +21,7 @@ const initializeBoard = (
     Nums.push([Rowrandom, Cellrandom]);
   }
 
+
   for (const row of Nums) {
     newCountBombBoard[row[0]][row[1]] = 11;
   }
@@ -48,16 +49,16 @@ const initializeBoard = (
 };
 
 const Home = () => {
-  // const [isFirstClick, setIsFirstClick] = useState(true);
   const levels = [
-    { name: 'beginner', level: '1', bombLength: 10, rowLength: 9, columnLength: 9 },
-    { name: 'intermediate', level: '2', bombLength: 40, rowLength: 16, columnLength: 16 },
-    { name: 'advanced', level: '3', bombLength: 99, rowLength: 16, columnLength: 30 },
-    { name: 'custome', level: 'custome', bombLength: 0, rowLength: 30, columnLength: 30 },
+    { name: 'beginner' , bombLength: 10, rowLength: 9, columnLength: 9 },
+    { name: 'intermediate',  bombLength: 40, rowLength: 16, columnLength: 16 },
+    { name: 'advanced',  bombLength: 99, rowLength: 16, columnLength: 30 },
+    { name: 'custome',  bombLength: 150, rowLength: 30, columnLength: 30 },
   ];
   const results: number[][] = [];
   const [timeCount, setTimeCount] = useState(0);
-  const [bombLength, setBombLength] = useState(10);
+  const [bombLength, setBombLength] = useState(10); //計算値にする
+  const [cutomeFormValue , setCutomeFormValue] = useState({height:30 , width:30 , NumOfbomb:150})
 
   const [levelsRowIndex, setLevelsRowIndex] = useState(0);
   const initBoard = [
@@ -97,25 +98,28 @@ const Home = () => {
   ]);
 
   const createBoard = (rowIndex: number) => {
-    const boards = [];
     const board = [];
-    for (let cell = 0; cell < levels[rowIndex].columnLength; cell++) {
-      board.push(0);
+    for (let i = 0; i < levels[rowIndex].rowLength; i++) {
+      const row = [];
+      for (let j = 0; j < levels[rowIndex].columnLength; j++) {
+        row.push(0);
+      }
+      board.push(row);
     }
-    for (let cell = 0; cell < levels[rowIndex].rowLength; cell++) {
-      boards.push(board);
-    }
-    setUserInputs(boards);
+
+    const bombBoard = structuredClone(board);
+
+    setLevelsRowIndex(rowIndex);
+    setCountBombBoard(bombBoard);
+    setUserInputs(board);
   };
 
   const time = () => {
-
-      new Promise(() => {
-        setInterval(() => {
-          setTimeCount((prev) => prev + 1);
-        }, 1000);
-      });
-
+    new Promise(() => {
+      setInterval(() => {
+        setTimeCount((prev) => prev + 1);
+      }, 1000);
+    });
   };
 
   useEffect(() => {
@@ -146,7 +150,6 @@ const Home = () => {
     const isFirstClick = countBombBoard.flat().every((cell) => cell === 0);
 
     if (isFirstClick === true) {
-      console.log('s');
       const newBoard = initializeBoard(rowIndex, cellIndex, countBombBoard, levels, levelsRowIndex);
       setCountBombBoard(newBoard);
     }
@@ -230,7 +233,6 @@ const Home = () => {
       newUserInputs[rowIndex][cellIndex] = 10;
     }
 
-    setUserInputs(newUserInputs);
     for (const row of newUserInputs) {
       for (const cell of row) {
         if (cell === 10) {
@@ -238,11 +240,12 @@ const Home = () => {
         }
       }
     }
+    setUserInputs(newUserInputs);
     setBombLength(10 - count);
   };
 
   const resetState = () => {
-    const newInitBoard = structuredClone(initBoard)
+    const newInitBoard = structuredClone(initBoard);
     setTimeCount(0);
     setBombLength(10);
     setUserInputs(initBoard);
@@ -260,6 +263,25 @@ const Home = () => {
               </p>
             );
           })}
+        </div>
+        <div style={{ display: 'flex' ,  justifyContent: 'center' }}>
+          {levelsRowIndex === 3 ? (
+            <div style={{display:"flex" , gap:20}}>
+
+              <label htmlFor="">
+                height <input type="text"  value={cutomeFormValue.height}/>
+              </label>
+              <label htmlFor="">
+                width <input type="text"  value={cutomeFormValue.width}/>
+              </label>
+              <label htmlFor="">
+              bombs <input type="text"  value={cutomeFormValue.NumOfbomb}/>
+              </label>
+              <input type="button"  value="update" />
+            </div>
+          ) : (
+            ''
+          )}
         </div>
       </div>
       <div className={styles.container}>
@@ -281,7 +303,9 @@ const Home = () => {
                   className={styles.cell}
                   onClick={() => clickHandler(rowIndex, cellIndex)}
                   onContextMenu={(e) => RightClick(e, rowIndex, cellIndex)}
-                  onMouseDown={()=> { countBombBoard.flat().every(cell => cell === 0) ? time() : ""}}
+                  onMouseDown={() => {
+                    countBombBoard.flat().every((cell) => cell === 0) ? time() : '';
+                  }}
                   style={{
                     borderColor: cell === 0 ? '#fff #7f7f7f #7f7f7f #fff' : '',
                     borderWidth: cell === 0 ? 4 : '1.5px',

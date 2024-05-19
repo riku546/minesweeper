@@ -1,70 +1,57 @@
-
-export const initializeBoard = (bombMap:number[][] , setBombMap) => {
-  const countBombBoard = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ];
-
-  const direction = [
-    [-1, 0],
-    [-1, 1],
-    [0, 1],
-    [1, 1],
-    [1, 0],
-    [1, -1],
-    [0, -1],
-    [-1, -1],
-  ];
+import { direction } from '../direction';
+export const initializeBoard = (
+  bombMap: number[][],
+  setBombMap,
+  userInputs: number[][],
+  setUserInputs,
+  isFirstClick: boolean,
+  levels,
+  countBombBoard: number[][],
+  levelsRowIndex: number,
+  rowIndex: number,
+  cellIndex: number,
+) => {
+  const newCountBombBoard = [...countBombBoard];
   const newBombBoard = [...bombMap];
-  const Nums = [];
+  const Nums: number[][] = [];
 
-  for (let i = 0; i < 10; i++) {
-    const Rowrandom = Math.floor(Math.random() * 9);
-    const Cellrandom = Math.floor(Math.random() * 9);
+  while (Nums.length < levels[levelsRowIndex].bombLength) {
+    const Rowrandom = Math.floor(Math.random() * levels[levelsRowIndex].rowLength);
+    const Cellrandom = Math.floor(Math.random() * levels[levelsRowIndex].columnLength);
+    if (rowIndex === Rowrandom && cellIndex === Cellrandom) continue;
+    if (Nums.some(([y, x]) => y === Rowrandom && x === Cellrandom)) continue;
+
     Nums.push([Rowrandom, Cellrandom]);
   }
+
   Nums.map((row) => {
-    newBombBoard[row[0]][row[1]] = 8;
+    newCountBombBoard[row[0]][row[1]] = 11;
   });
 
+  newCountBombBoard.map((row: number[], rowIndex: number) => {
+    row.map((cell: number, cellIndex: number) => {
+      if (cell === 11) return;
+      let count = 0;
+      direction.map((d) => {
+        const x = cellIndex + d[0];
+        const y = rowIndex + d[1];
+        if (x < 0 || x > levels[levelsRowIndex].columnLength - 1) return;
+        if (y < 0 || y > levels[levelsRowIndex].rowLength - 1) return;
 
-
-    newBombBoard.map((row, rowIndex) => {
-      row.map((cell, cellIndex) => {
-        if (cell === 8) return;
-        let count = 0;
-        direction.map((d) => {
-          const x = cellIndex + d[0];
-          const y = rowIndex + d[1];
-          if (x < 0 || x > 8) return;
-          if (y < 0 || y > 8) return;
-
-          if (newBombBoard[y][x] === 0) return;
-          if (newBombBoard[y][x] === 8) {
-            count += 1;
-          }
-        });
-        countBombBoard[rowIndex][cellIndex] = count;
+        if (newCountBombBoard[y][x] === 0) return;
+        if (newCountBombBoard[y][x] === 11) {
+          count += 1;
+        }
       });
+      newCountBombBoard[rowIndex][cellIndex] = count;
     });
+  });
 
-
-
-    countBombBoard.map((row, rowIndex) => {
-      row.map((cell, cellIndex) => {
-        if (cell === 0) return;
-        newBombBoard[rowIndex][cellIndex] = cell;
-      });
+  countBombBoard.map((row: number[], rowIndex: number) => {
+    row.map((cell, cellIndex) => {
+      if (cell === 0) return;
+      newBombBoard[rowIndex][cellIndex] = cell;
     });
-
-   setBombMap(newBombBoard)
-
-
+  });
+  setBombMap(newBombBoard);
 };

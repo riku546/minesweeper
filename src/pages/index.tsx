@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import styles from './index.module.css';
 import { direction } from './direction';
+import { connect } from 'http2';
+import { create } from 'domain';
 
 const initializeBoard = (
   rowIndex: number,
@@ -20,7 +22,6 @@ const initializeBoard = (
 
     Nums.push([Rowrandom, Cellrandom]);
   }
-
 
   for (const row of Nums) {
     newCountBombBoard[row[0]][row[1]] = 11;
@@ -49,22 +50,20 @@ const initializeBoard = (
 };
 
 const Home = () => {
-  // const levels = [
-  //   { name: 'beginner' , bombLength: 10, rowLength: 9, columnLength: 9 },
-  //   { name: 'intermediate',  bombLength: 40, rowLength: 16, columnLength: 16 },
-  //   { name: 'advanced',  bombLength: 99, rowLength: 16, columnLength: 30 },
-  //   { name: 'custome',  bombLength: 150, rowLength: 30, columnLength: 30 },
-  // ];
-  const[levels , setLevels]  = useState([
-    { name: 'beginner' , bombLength: 10, rowLength: 9, columnLength: 9 },
-    { name: 'intermediate',  bombLength: 40, rowLength: 16, columnLength: 16 },
-    { name: 'advanced',  bombLength: 99, rowLength: 16, columnLength: 30 },
-    { name: 'custome',  bombLength: 150, rowLength: 30, columnLength: 30 },
-  ])
+  const [levels, setLevels] = useState([
+    { name: 'beginner', bombLength: 10, rowLength: 9, columnLength: 9 },
+    { name: 'intermediate', bombLength: 40, rowLength: 16, columnLength: 16 },
+    { name: 'advanced', bombLength: 99, rowLength: 16, columnLength: 30 },
+    { name: 'custome', bombLength: 150, rowLength: 30, columnLength: 30 },
+  ]);
   const results: number[][] = [];
   const [timeCount, setTimeCount] = useState(0);
   const [bombLength, setBombLength] = useState(10); //計算値にする
-  // const [cutomeFormValue , setCutomeFormValue] = useState({height:30 , width:30 , NumOfbomb:150})
+  const [cutomeFormValue, setCutomeFormValue] = useState({
+    height: '30',
+    width: '30',
+    bomb: '150',
+  });
 
   const [levelsRowIndex, setLevelsRowIndex] = useState(0);
   const initBoard = [
@@ -167,7 +166,7 @@ const Home = () => {
     }
 
     if (countBombBoard[rowIndex][cellIndex] === 0) {
-      const tL :number[][] = [];
+      const tL: number[][] = [];
       results.push([rowIndex, cellIndex]);
       //再帰関数
       openEmptySquare(direction, rowIndex, cellIndex);
@@ -270,20 +269,58 @@ const Home = () => {
             );
           })}
         </div>
-        <div style={{ display: 'flex' ,  justifyContent: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           {levelsRowIndex === 3 ? (
-            <div style={{display:"flex" , gap:20}}>
+            <div style={{ display: 'flex', gap: 20 }}>
+              <label htmlFor="">
+                height{' '}
+                <input
+                  type="text"
+                  value={cutomeFormValue.height}
+                  onChange={(e) => {
+                    setCutomeFormValue({ ...cutomeFormValue, height: e.target.value });
+                  }}
+                />
+              </label>
+              <label htmlFor="">
+                width{' '}
+                <input
+                  type="text"
+                  value={cutomeFormValue.width}
+                  onChange={(e) => {
+                    setCutomeFormValue({ ...cutomeFormValue, width: e.target.value });
+                  }}
+                />
+              </label>
+              <label htmlFor="">
+                bombs{' '}
+                <input
+                  type="text"
+                  value={cutomeFormValue.bomb}
+                  onChange={(e) => {
+                    setCutomeFormValue({ ...cutomeFormValue, bomb: e.target.value });
+                  }}
+                />
+              </label>
+              <input
+                type="button"
+                value="update"
+                onClick={() => {
+                  setLevels([
+                    { name: 'beginner', bombLength: 10, rowLength: 9, columnLength: 9 },
+                    { name: 'intermediate', bombLength: 40, rowLength: 16, columnLength: 16 },
+                    { name: 'advanced', bombLength: 99, rowLength: 16, columnLength: 30 },
+                    {
+                      name: 'custome',
+                      bombLength: Number(cutomeFormValue.bomb),
+                      rowLength: Number(cutomeFormValue.height),
+                      columnLength: Number(cutomeFormValue.width),
+                    },
+                  ]);
 
-              <label htmlFor="">
-                height <input type="text"  value={levels[3].columnLength}/>
-              </label>
-              <label htmlFor="">
-                width <input type="text"  value={levels[3].rowLength}/>
-              </label>
-              <label htmlFor="">
-              bombs <input type="text"  value={levels[3].bombLength}/>
-              </label>
-              <input type="button"  value="update" />
+                  createBoard(3)
+                }}
+              />
             </div>
           ) : (
             ''

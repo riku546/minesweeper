@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import styles from './index.module.css';
 import { direction } from './direction';
-import { connect } from 'http2';
-import { create } from 'domain';
 
 const initializeBoard = (
   rowIndex: number,

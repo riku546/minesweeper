@@ -1,32 +1,26 @@
-import { direction } from '../direction';
+import { direction } from "../direction";
+
 export const initializeBoard = (
-  bombMap: number[][],
-  setBombMap,
-  userInputs: number[][],
-  setUserInputs,
-  isFirstClick: boolean,
-  levels,
-  countBombBoard: number[][],
-  levelsRowIndex: number,
   rowIndex: number,
   cellIndex: number,
+  countBombBoard: number[][],
+  levelInfo:{height:number , width:number , NumBomb:number},
 ) => {
   const newCountBombBoard = [...countBombBoard];
-  const newBombBoard = [...bombMap];
   const Nums: number[][] = [];
 
-  while (Nums.length < levels[levelsRowIndex].bombLength) {
-    const Rowrandom = Math.floor(Math.random() * levels[levelsRowIndex].rowLength);
-    const Cellrandom = Math.floor(Math.random() * levels[levelsRowIndex].columnLength);
+  while (Nums.length < levelInfo.NumBomb) {
+    const Rowrandom = Math.floor(Math.random() * levelInfo.height);
+    const Cellrandom = Math.floor(Math.random() * levelInfo.width);
     if (rowIndex === Rowrandom && cellIndex === Cellrandom) continue;
     if (Nums.some(([y, x]) => y === Rowrandom && x === Cellrandom)) continue;
 
     Nums.push([Rowrandom, Cellrandom]);
   }
 
-  Nums.map((row) => {
+  for (const row of Nums) {
     newCountBombBoard[row[0]][row[1]] = 11;
-  });
+  }
 
   newCountBombBoard.map((row: number[], rowIndex: number) => {
     row.map((cell: number, cellIndex: number) => {
@@ -35,8 +29,8 @@ export const initializeBoard = (
       direction.map((d) => {
         const x = cellIndex + d[0];
         const y = rowIndex + d[1];
-        if (x < 0 || x > levels[levelsRowIndex].columnLength - 1) return;
-        if (y < 0 || y > levels[levelsRowIndex].rowLength - 1) return;
+        if (x < 0 || x > levelInfo.width - 1) return;
+        if (y < 0 || y > levelInfo.height - 1) return;
 
         if (newCountBombBoard[y][x] === 0) return;
         if (newCountBombBoard[y][x] === 11) {
@@ -47,11 +41,5 @@ export const initializeBoard = (
     });
   });
 
-  countBombBoard.map((row: number[], rowIndex: number) => {
-    row.map((cell, cellIndex) => {
-      if (cell === 0) return;
-      newBombBoard[rowIndex][cellIndex] = cell;
-    });
-  });
-  setBombMap(newBombBoard);
+  return newCountBombBoard;
 };

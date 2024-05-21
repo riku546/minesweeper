@@ -2,79 +2,21 @@ import { useState, useEffect } from 'react';
 import styles from './index.module.css';
 import { direction } from './direction';
 
-const initializeBoard = (
-  rowIndex: number,
-  cellIndex: number,
-  countBombBoard: number[][],
-  levels,
-  levelsRowIndex: number,
-) => {
-  const newCountBombBoard = [...countBombBoard];
-  const Nums: number[][] = [];
-
-  while (Nums.length < levels[levelsRowIndex].bombLength) {
-    const Rowrandom = Math.floor(Math.random() * levels[levelsRowIndex].rowLength);
-    const Cellrandom = Math.floor(Math.random() * levels[levelsRowIndex].columnLength);
-    if (rowIndex === Rowrandom && cellIndex === Cellrandom) continue;
-    if (Nums.some(([y, x]) => y === Rowrandom && x === Cellrandom)) continue;
-
-    Nums.push([Rowrandom, Cellrandom]);
-  }
-
-  for (const row of Nums) {
-    newCountBombBoard[row[0]][row[1]] = 11;
-  }
-
-  newCountBombBoard.map((row: number[], rowIndex: number) => {
-    row.map((cell: number, cellIndex: number) => {
-      if (cell === 11) return;
-      let count = 0;
-      direction.map((d) => {
-        const x = cellIndex + d[0];
-        const y = rowIndex + d[1];
-        if (x < 0 || x > levels[levelsRowIndex].columnLength - 1) return;
-        if (y < 0 || y > levels[levelsRowIndex].rowLength - 1) return;
-
-        if (newCountBombBoard[y][x] === 0) return;
-        if (newCountBombBoard[y][x] === 11) {
-          count += 1;
-        }
-      });
-      newCountBombBoard[rowIndex][cellIndex] = count;
-    });
-  });
-
-  return newCountBombBoard;
-};
+import { initializeBoard } from './fuctions/Initialize';
+import { openEmptySquare } from './fuctions/openEmpty';
 
 const Home = () => {
-  const [levels, setLevels] = useState([
-    { name: 'beginner', bombLength: 10, rowLength: 9, columnLength: 9 },
-    { name: 'intermediate', bombLength: 40, rowLength: 16, columnLength: 16 },
-    { name: 'advanced', bombLength: 99, rowLength: 16, columnLength: 30 },
-    { name: 'custome', bombLength: 150, rowLength: 30, columnLength: 30 },
-  ]);
   const results: number[][] = [];
   const [timeCount, setTimeCount] = useState(0);
-  const [bombLength, setBombLength] = useState(10); //計算値にする
-  const [cutomeFormValue, setCutomeFormValue] = useState({
-    height: '30',
-    width: '30',
-    bomb: '150',
+  const [levelInfo, setLevelInfo] = useState({
+    height: 9,
+    width: 9,
+    NumBomb: 10,
+    customMode: false,
   });
+  const [isTimerActive, setIsTimerActive] = useState(false);
 
-  const [levelsRowIndex, setLevelsRowIndex] = useState(0);
-  const initBoard = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ];
+
 
   const [userInputs, setUserInputs] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -100,74 +42,101 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  const createBoard = (rowIndex: number) => {
+  const createBoard = (height: number, width: number) => {
     const board = [];
-    for (let i = 0; i < levels[rowIndex].rowLength; i++) {
+    for (let i = 0; i < height; i++) {
       const row = [];
-      for (let j = 0; j < levels[rowIndex].columnLength; j++) {
+      for (let j = 0; j < width; j++) {
         row.push(0);
       }
       board.push(row);
     }
+    console.log(board);
 
     const bombBoard = structuredClone(board);
 
-    setLevelsRowIndex(rowIndex);
     setCountBombBoard(bombBoard);
     setUserInputs(board);
   };
 
-  const time = () => {
-    new Promise(() => {
-      setInterval(() => {
+  // const time = () => {
+  //   new Promise(() => {
+  //     setInterval(() => {
+  //       setTimeCount((prev) => prev + 1);
+  //     }, 1000);
+  //   });
+  // };
+  //クリア判定
+  // useEffect(() => {
+  //   const bombPostionList: number[][] = [];
+  //   const checkList: number[] = [];
+  //   countBombBoard.map((row: number[], rowIndex: number) => {
+  //     row.map((cell, cellIndex) => {
+  //       if (cell === 11) {
+  //         bombPostionList.push([rowIndex, cellIndex]);
+  //       }
+  //     });
+  //   });
+
+  //   userInputs.map((row: number[], rowIndex: number) => {
+  //     row.map((cell, cellIndex) => {
+  //       if (bombPostionList.some(([y, x]) => y === rowIndex && x === cellIndex)) return;
+  //       if (cell === 0) {
+  //         checkList.push(cell);
+  //       }
+  //     });
+  //   });
+  //   if (checkList.length === 0) {
+  //     alert('finish');
+  //   }
+  // }, [userInputs]);
+
+
+
+//タイマー処理
+  useEffect(() => {
+    let time = null
+    if (isTimerActive) {
+
+      time = setInterval(() => {
         setTimeCount((prev) => prev + 1);
       }, 1000);
-    });
-  };
+    } 
 
-  useEffect(() => {
-    const bombPostionList: number[][] = [];
-    const checkList: number[] = [];
-    countBombBoard.map((row: number[], rowIndex: number) => {
-      row.map((cell, cellIndex) => {
-        if (cell === 11) {
-          bombPostionList.push([rowIndex, cellIndex]);
-        }
-      });
-    });
+    return() => {clearInterval(time)}
+  }, [isTimerActive]);
 
-    userInputs.map((row: number[], rowIndex: number) => {
-      row.map((cell, cellIndex) => {
-        if (bombPostionList.some(([y, x]) => y === rowIndex && x === cellIndex)) return;
-        if (cell === 0) {
-          checkList.push(cell);
-        }
-      });
-    });
-    if (checkList.length === 0) {
-      alert('finish');
-    }
-  }, [userInputs]);
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
+    console.log(countBombBoard);
     const isFirstClick = countBombBoard.flat().every((cell) => cell === 0);
+    const newUserInputs = [...userInputs];
 
     if (isFirstClick === true) {
-      const newBoard = initializeBoard(rowIndex, cellIndex, countBombBoard, levels, levelsRowIndex);
+      const newBoard = initializeBoard(rowIndex, cellIndex, countBombBoard, levelInfo);
       setCountBombBoard(newBoard);
     }
 
-    const newUserInputs = [...userInputs];
-
     if (isFirstClick === false && countBombBoard[rowIndex][cellIndex] === 11) {
-      alert('fin');
+      const results: number[][] = [];
+      countBombBoard.map((row, rowIndex) => {
+        row.map((cell, cellIndex) => {
+          if (cell === 11) {
+            results.push([rowIndex, cellIndex]);
+          }
+        });
+      });
+      results.map((row: number[]) => {
+        newUserInputs[row[0]][row[1]] = 11;
+      });
+      setUserInputs(newUserInputs);
     }
 
     if (countBombBoard[rowIndex][cellIndex] === 0) {
       const tL: number[][] = [];
       results.push([rowIndex, cellIndex]);
       //再帰関数
-      openEmptySquare(direction, rowIndex, cellIndex);
+      openEmptySquare(direction, rowIndex, cellIndex, results, levelInfo, countBombBoard);
 
       for (const count of results) {
         newUserInputs[count[0]][count[1]] = 100;
@@ -179,8 +148,8 @@ const Home = () => {
             direction.map((row) => {
               const x = index + row[0];
               const y = rowIndex + row[1];
-              if (x < 0 || x > levels[levelsRowIndex].columnLength - 1) return;
-              if (y < 0 || y > levels[levelsRowIndex].rowLength - 1) return;
+              if (x < 0 || x > levelInfo.width - 1) return;
+              if (y < 0 || y > levelInfo.height - 1) return;
 
               if (countBombBoard[y][x] === 11 || countBombBoard[y][x] === 0) {
                 return;
@@ -202,33 +171,9 @@ const Home = () => {
     setUserInputs(newUserInputs);
   };
 
-  const openEmptySquare = (direction: number[][], rowIndex: number, cellIndex: number) => {
-    const temporaryResult: number[][] = [];
-    direction.map((row) => {
-      const y = rowIndex + row[1];
-      const x = cellIndex + row[0];
-
-      if (x < 0 || x > levels[levelsRowIndex].columnLength - 1) return;
-      if (y < 0 || y > levels[levelsRowIndex].rowLength - 1) return;
-
-      if (countBombBoard[y][x] === 0 && !results.some(([r, c]) => r === y && c === x)) {
-        temporaryResult.push([y, x]);
-        results.push([y, x]);
-      }
-    });
-
-    if (temporaryResult.length === 0) return;
-    const CopyTemporaryResults = [...temporaryResult];
-
-    CopyTemporaryResults.map((row: number[]) => {
-      openEmptySquare(direction, row[0], row[1]);
-    });
-  };
-
   const RightClick = (e, rowIndex: number, cellIndex: number) => {
     e.preventDefault();
 
-    let count = 0;
     const newUserInputs = [...userInputs];
     if (newUserInputs[rowIndex][cellIndex] === 10) {
       newUserInputs[rowIndex][cellIndex] = 0;
@@ -236,87 +181,114 @@ const Home = () => {
       newUserInputs[rowIndex][cellIndex] = 10;
     }
 
-    for (const row of newUserInputs) {
-      for (const cell of row) {
-        if (cell === 10) {
-          count++;
-        }
-      }
-    }
     setUserInputs(newUserInputs);
-    setBombLength(10 - count);
   };
 
   const resetState = () => {
-    const newInitBoard = structuredClone(initBoard);
+    const board = [];
+    for (let i = 0; i < levelInfo.height; i++) {
+      const row = [];
+      for (let j = 0; j < levelInfo.width; j++) {
+        row.push(0);
+      }
+      board.push(row);
+    }
+
+    const newBoard = structuredClone(board)
+
     setTimeCount(0);
-    setBombLength(10);
-    setUserInputs(initBoard);
-    setCountBombBoard(newInitBoard);
+    setIsTimerActive(false);
+
+    setUserInputs(board);
+    setCountBombBoard(newBoard);
   };
 
   return (
     <>
       <div>
-        <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>
-          {levels.map((row, rowIndex) => {
-            return (
-              <p onClick={() => createBoard(rowIndex)} key={row.name}>
-                {row.name}
-              </p>
-            );
-          })}
+        <div>
+          <ul
+            style={{
+              listStyle: 'none',
+              display: 'flex',
+              gap: 20,
+              justifyContent: 'center',
+              color: 'white',
+            }}
+          >
+            <li
+              onClick={() => {
+                createBoard(9, 9),
+                  setLevelInfo({ height: 9, width: 9, NumBomb: 10, customMode: false });
+              }}
+            >
+              beginner
+            </li>
+            <li
+              onClick={() => {
+                createBoard(16, 16  ),
+                  setLevelInfo({ height: 16, width: 16, NumBomb: 40, customMode: false });
+              }}
+            >
+              intermediate
+            </li>
+            <li
+              onClick={() => {
+                createBoard(16, 30),
+                  setLevelInfo({ height: 16, width: 30, NumBomb: 99, customMode: false });
+              }}
+            >
+              advanced
+            </li>
+            <li
+              onClick={() => {
+                createBoard(30, 30),
+                  setLevelInfo({ height: 30, width: 30, NumBomb: 150, customMode: true });
+              }}
+            >
+              custom
+            </li>
+          </ul>
         </div>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          {levelsRowIndex === 3 ? (
+          {levelInfo.customMode ? (
             <div style={{ display: 'flex', gap: 20 }}>
               <label htmlFor="">
-                height{' '}
                 <input
+                  className={styles.input}
                   type="text"
-                  value={cutomeFormValue.height}
+                  value={levelInfo.height}
                   onChange={(e) => {
-                    setCutomeFormValue({ ...cutomeFormValue, height: e.target.value });
+                    setLevelInfo({ ...levelInfo, height: Number(e.target.value) });
                   }}
                 />
               </label>
               <label htmlFor="">
-                width{' '}
                 <input
+                  className={styles.input}
                   type="text"
-                  value={cutomeFormValue.width}
+                  value={levelInfo.width}
                   onChange={(e) => {
-                    setCutomeFormValue({ ...cutomeFormValue, width: e.target.value });
+                    setLevelInfo({ ...levelInfo, width: Number(e.target.value) });
                   }}
                 />
               </label>
               <label htmlFor="">
-                bombs{' '}
                 <input
+                  className={styles.input}
                   type="text"
-                  value={cutomeFormValue.bomb}
+                  value={levelInfo.NumBomb}
                   onChange={(e) => {
-                    setCutomeFormValue({ ...cutomeFormValue, bomb: e.target.value });
+                    setLevelInfo({ ...levelInfo, NumBomb: Number(e.target.value) });
                   }}
                 />
               </label>
               <input
+                className={styles.button}
                 type="button"
                 value="update"
                 onClick={() => {
-                  setLevels([
-                    { name: 'beginner', bombLength: 10, rowLength: 9, columnLength: 9 },
-                    { name: 'intermediate', bombLength: 40, rowLength: 16, columnLength: 16 },
-                    { name: 'advanced', bombLength: 99, rowLength: 16, columnLength: 30 },
-                    {
-                      name: 'custome',
-                      bombLength: Number(cutomeFormValue.bomb),
-                      rowLength: Number(cutomeFormValue.height),
-                      columnLength: Number(cutomeFormValue.width),
-                    },
-                  ]);
-
-                  createBoard(3)
+                  createBoard(levelInfo.height, levelInfo.width);
                 }}
               />
             </div>
@@ -326,13 +298,34 @@ const Home = () => {
         </div>
       </div>
       <div className={styles.container}>
-        <div className={styles.matchInfos}>
-          <div>bomb: {bombLength}</div>
-          <div
-            className={styles.restartButton}
-            style={{ backgroundPosition: '-330px' }}
-            onClick={resetState}
-          />
+        <div className={styles.matchInfos} style={{ color: 'white' }}>
+          <div>
+            bomb:
+            {countBombBoard.flat().every((cell) => cell === 0)
+              ? levelInfo.NumBomb
+              : countBombBoard.flat().filter((cell) => cell === 11).length -
+                userInputs.flat().filter((cell) => cell === 10).length}
+          </div>
+          {levelInfo.NumBomb - userInputs.flat().filter((cell) => cell === 10).length === 0 ? (
+            <div
+              className={styles.restartButton}
+              style={{
+                backgroundPosition: '-360px',
+              }}
+              onClick={() => resetState()}
+            />
+          ) : (
+            <div
+              className={styles.restartButton}
+              style={{
+                backgroundPosition: !userInputs.flat().some((cell) => cell === 11)
+                  ? '-330px'
+                  : `-390px`,
+              }}
+              onClick={() => resetState()}
+            />
+          )}
+
           <div>time: {timeCount}</div>
         </div>
         <div className={styles.board}>
@@ -345,9 +338,10 @@ const Home = () => {
                   onClick={() => clickHandler(rowIndex, cellIndex)}
                   onContextMenu={(e) => RightClick(e, rowIndex, cellIndex)}
                   onMouseDown={() => {
-                    countBombBoard.flat().every((cell) => cell === 0) ? time() : '';
+                    countBombBoard.flat().every((cell) => cell === 0) ? setIsTimerActive(true) : '';
                   }}
                   style={{
+                    opacity: '0.6',
                     borderColor: cell === 0 ? '#fff #7f7f7f #7f7f7f #fff' : '',
                     borderWidth: cell === 0 ? 4 : '1.5px',
                     backgroundColor: cell === 11 ? 'red' : '',

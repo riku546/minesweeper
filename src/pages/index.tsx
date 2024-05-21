@@ -1,68 +1,23 @@
 import { useState, useEffect } from 'react';
 import styles from './index.module.css';
 import { direction } from './direction';
-import { connect } from 'http2';
-import { create } from 'domain';
-
-const initializeBoard = (
-  rowIndex: number,
-  cellIndex: number,
-  countBombBoard: number[][],
-  levels,
-  levelsRowIndex: number,
-) => {
-  const newCountBombBoard = [...countBombBoard];
-  const Nums: number[][] = [];
-
-  while (Nums.length < levels[levelsRowIndex].bombLength) {
-    const Rowrandom = Math.floor(Math.random() * levels[levelsRowIndex].rowLength);
-    const Cellrandom = Math.floor(Math.random() * levels[levelsRowIndex].columnLength);
-    if (rowIndex === Rowrandom && cellIndex === Cellrandom) continue;
-    if (Nums.some(([y, x]) => y === Rowrandom && x === Cellrandom)) continue;
-
-    Nums.push([Rowrandom, Cellrandom]);
-  }
-
-  for (const row of Nums) {
-    newCountBombBoard[row[0]][row[1]] = 11;
-  }
-
-  newCountBombBoard.map((row: number[], rowIndex: number) => {
-    row.map((cell: number, cellIndex: number) => {
-      if (cell === 11) return;
-      let count = 0;
-      direction.map((d) => {
-        const x = cellIndex + d[0];
-        const y = rowIndex + d[1];
-        if (x < 0 || x > levels[levelsRowIndex].columnLength - 1) return;
-        if (y < 0 || y > levels[levelsRowIndex].rowLength - 1) return;
-
-        if (newCountBombBoard[y][x] === 0) return;
-        if (newCountBombBoard[y][x] === 11) {
-          count += 1;
-        }
-      });
-      newCountBombBoard[rowIndex][cellIndex] = count;
-    });
-  });
-
-  return newCountBombBoard;
-};
+import { initializeBoard } from './fuctions/Initialize';
+import { openEmptySquare } from './fuctions/openEmpty';
 
 const Home = () => {
-  const [levels, setLevels] = useState([
-    { name: 'beginner', bombLength: 10, rowLength: 9, columnLength: 9 },
-    { name: 'intermediate', bombLength: 40, rowLength: 16, columnLength: 16 },
-    { name: 'advanced', bombLength: 99, rowLength: 16, columnLength: 30 },
-    { name: 'custome', bombLength: 150, rowLength: 30, columnLength: 30 },
-  ]);
+  // const [levels, setLevels] = useState([
+  //   { name: 'beginner', bombLength: 10, rowLength: 9, columnLength: 9 },
+  //   { name: 'intermediate', bombLength: 40, rowLength: 16, columnLength: 16 },
+  //   { name: 'advanced', bombLength: 99, rowLength: 16, columnLength: 30 },
+  //   { name: 'custom', bombLength: 150, rowLength: 30, columnLength: 30 },
+  // ]);
   const results: number[][] = [];
   const [timeCount, setTimeCount] = useState(0);
   const [bombLength, setBombLength] = useState(10); //計算値にする
-  const [cutomeFormValue, setCutomeFormValue] = useState({
-    height: '30',
-    width: '30',
-    bomb: '150',
+  const [levelInfo, setLevelInfo] = useState({
+    height: 9,
+    width: 9,
+    NumBomb: 10,
   });
 
   const [levelsRowIndex, setLevelsRowIndex] = useState(0);
@@ -102,15 +57,16 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  const createBoard = (rowIndex: number) => {
+  const createBoard = (height: number, width: number, NumBomb: number) => {
     const board = [];
-    for (let i = 0; i < levels[rowIndex].rowLength; i++) {
+    for (let i = 0; i < levelInfo.height; i++) {
       const row = [];
-      for (let j = 0; j < levels[rowIndex].columnLength; j++) {
+      for (let j = 0; j < levelInfo.width; j++) {
         row.push(0);
       }
       board.push(row);
     }
+    console.log(board);
 
     const bombBoard = structuredClone(board);
 
@@ -155,7 +111,7 @@ const Home = () => {
     const isFirstClick = countBombBoard.flat().every((cell) => cell === 0);
 
     if (isFirstClick === true) {
-      const newBoard = initializeBoard(rowIndex, cellIndex, countBombBoard, levels, levelsRowIndex);
+      const newBoard = initializeBoard(rowIndex, cellIndex, countBombBoard, levelInfo, levelsRowIndex);
       setCountBombBoard(newBoard);
     }
 
@@ -169,7 +125,15 @@ const Home = () => {
       const tL: number[][] = [];
       results.push([rowIndex, cellIndex]);
       //再帰関数
-      openEmptySquare(direction, rowIndex, cellIndex);
+      openEmptySquare(
+        direction,
+        rowIndex,
+        cellIndex,
+        results,
+        levelInfo,
+        levelsRowIndex,
+        countBombBoard,
+      );
 
       for (const count of results) {
         newUserInputs[count[0]][count[1]] = 100;
@@ -204,29 +168,6 @@ const Home = () => {
     setUserInputs(newUserInputs);
   };
 
-  const openEmptySquare = (direction: number[][], rowIndex: number, cellIndex: number) => {
-    const temporaryResult: number[][] = [];
-    direction.map((row) => {
-      const y = rowIndex + row[1];
-      const x = cellIndex + row[0];
-
-      if (x < 0 || x > levels[levelsRowIndex].columnLength - 1) return;
-      if (y < 0 || y > levels[levelsRowIndex].rowLength - 1) return;
-
-      if (countBombBoard[y][x] === 0 && !results.some(([r, c]) => r === y && c === x)) {
-        temporaryResult.push([y, x]);
-        results.push([y, x]);
-      }
-    });
-
-    if (temporaryResult.length === 0) return;
-    const CopyTemporaryResults = [...temporaryResult];
-
-    CopyTemporaryResults.map((row: number[]) => {
-      openEmptySquare(direction, row[0], row[1]);
-    });
-  };
-
   const RightClick = (e, rowIndex: number, cellIndex: number) => {
     e.preventDefault();
 
@@ -256,18 +197,47 @@ const Home = () => {
     setUserInputs(initBoard);
     setCountBombBoard(newInitBoard);
   };
+  // const [levels, setLevels] = useState([
+  //   { name: 'beginner', bombLength: 10, rowLength: 9, columnLength: 9 },
+  //   { name: 'intermediate', bombLength: 40, rowLength: 16, columnLength: 16 },
+  //   { name: 'advanced', bombLength: 99, rowLength: 16, columnLength: 30 },
+  //   { name: 'custom', bombLength: 150, rowLength: 30, columnLength: 30 },
+  // ]);
 
   return (
     <>
       <div>
-        <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>
-          {levels.map((row, rowIndex) => {
-            return (
-              <p onClick={() => createBoard(rowIndex)} key={row.name}>
-                {row.name}
-              </p>
-            );
-          })}
+        <div>
+          <ul style={{ listStyle: 'none', display: 'flex', gap: 20, justifyContent: 'center' }}>
+            <li
+              onClick={() => {
+                createBoard(9, 9, 10), setLevelInfo({ height: 9, width: 9, NumBomb: 10 });
+              }}
+            >
+              beginner
+            </li>
+            <li
+              onClick={() => {
+                createBoard(16, 16, 40), setLevelInfo({ height: 16, width: 16, NumBomb: 40 });
+              }}
+            >
+              intermediate
+            </li>
+            <li
+              onClick={() => {
+                createBoard(16, 30, 99), setLevelInfo({ height: 16, width: 30, NumBomb: 99 });
+              }}
+            >
+              advanced
+            </li>
+            <li
+              onClick={() => {
+                createBoard(30, 30, 150), setLevelInfo({ height: 30, width: 30, NumBomb: 150 });
+              }}
+            >
+              custom
+            </li>
+          </ul>
         </div>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           {levelsRowIndex === 3 ? (
@@ -311,14 +281,14 @@ const Home = () => {
                     { name: 'intermediate', bombLength: 40, rowLength: 16, columnLength: 16 },
                     { name: 'advanced', bombLength: 99, rowLength: 16, columnLength: 30 },
                     {
-                      name: 'custome',
+                      name: 'custom',
                       bombLength: Number(cutomeFormValue.bomb),
                       rowLength: Number(cutomeFormValue.height),
                       columnLength: Number(cutomeFormValue.width),
                     },
                   ]);
 
-                  createBoard(3)
+                  createBoard(3);
                 }}
               />
             </div>
@@ -333,7 +303,7 @@ const Home = () => {
           <div
             className={styles.restartButton}
             style={{ backgroundPosition: '-330px' }}
-            onClick={resetState}
+            onClick={() => window.location.reload()}
           />
           <div>time: {timeCount}</div>
         </div>

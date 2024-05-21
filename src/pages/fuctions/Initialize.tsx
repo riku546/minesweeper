@@ -4,15 +4,15 @@ export const initializeBoard = (
   rowIndex: number,
   cellIndex: number,
   countBombBoard: number[][],
-  levels,
+  levelInfo:{height:number , width:number , NumBomb:number},
   levelsRowIndex: number,
 ) => {
   const newCountBombBoard = [...countBombBoard];
   const Nums: number[][] = [];
 
-  while (Nums.length < levels[levelsRowIndex].bombLength) {
-    const Rowrandom = Math.floor(Math.random() * levels[levelsRowIndex].rowLength);
-    const Cellrandom = Math.floor(Math.random() * levels[levelsRowIndex].columnLength);
+  while (Nums.length < levelInfo.NumBomb) {
+    const Rowrandom = Math.floor(Math.random() * levelInfo.height);
+    const Cellrandom = Math.floor(Math.random() * levelInfo.width);
     if (rowIndex === Rowrandom && cellIndex === Cellrandom) continue;
     if (Nums.some(([y, x]) => y === Rowrandom && x === Cellrandom)) continue;
 
@@ -30,8 +30,8 @@ export const initializeBoard = (
       direction.map((d) => {
         const x = cellIndex + d[0];
         const y = rowIndex + d[1];
-        if (x < 0 || x > levels[levelsRowIndex].columnLength - 1) return;
-        if (y < 0 || y > levels[levelsRowIndex].rowLength - 1) return;
+        if (x < 0 || x > levelInfo.width - 1) return;
+        if (y < 0 || y > levelInfo.height - 1) return;
 
         if (newCountBombBoard[y][x] === 0) return;
         if (newCountBombBoard[y][x] === 11) {

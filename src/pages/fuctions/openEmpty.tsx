@@ -12,8 +12,8 @@ export const openEmptySquare = (
       const y = rowIndex + row[1];
       const x = cellIndex + row[0];
   
-      if (x < 0 || x > levels[levelsRowIndex].columnLength - 1) return;
-      if (y < 0 || y > levels[levelsRowIndex].rowLength - 1) return;
+      if (x < 0 || x > levelInfo.width - 1) return;
+      if (y < 0 || y > levelInfo.height - 1) return;
   
       if (countBombBoard[y][x] === 0 && !results.some(([r, c]) => r === y && c === x)) {
         temporaryResult.push([y, x]);
@@ -25,6 +25,6 @@ export const openEmptySquare = (
     const CopyTemporaryResults = [...temporaryResult];
   
     CopyTemporaryResults.map((row: number[]) => {
-      openEmptySquare(direction, row[0], row[1], results, levels, levelsRowIndex, countBombBoard);
+      openEmptySquare(direction, row[0], row[1], results, levelInfo, levelsRowIndex, countBombBoard);
     });
   };

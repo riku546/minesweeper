@@ -3,14 +3,9 @@ import styles from './index.module.css';
 import { direction } from './direction';
 import { initializeBoard } from './fuctions/Initialize';
 import { openEmptySquare } from './fuctions/openEmpty';
+import { count } from 'console';
 
 const Home = () => {
-  // const [levels, setLevels] = useState([
-  //   { name: 'beginner', bombLength: 10, rowLength: 9, columnLength: 9 },
-  //   { name: 'intermediate', bombLength: 40, rowLength: 16, columnLength: 16 },
-  //   { name: 'advanced', bombLength: 99, rowLength: 16, columnLength: 30 },
-  //   { name: 'custom', bombLength: 150, rowLength: 30, columnLength: 30 },
-  // ]);
   const results: number[][] = [];
   const [timeCount, setTimeCount] = useState(0);
   const [bombLength, setBombLength] = useState(10); //計算値にする
@@ -18,6 +13,7 @@ const Home = () => {
     height: 9,
     width: 9,
     NumBomb: 10,
+    customMode: false,
   });
 
   const [levelsRowIndex, setLevelsRowIndex] = useState(0);
@@ -59,9 +55,9 @@ const Home = () => {
 
   const createBoard = (height: number, width: number, NumBomb: number) => {
     const board = [];
-    for (let i = 0; i < levelInfo.height; i++) {
+    for (let i = 0; i < height; i++) {
       const row = [];
-      for (let j = 0; j < levelInfo.width; j++) {
+      for (let j = 0; j < width; j++) {
         row.push(0);
       }
       board.push(row);
@@ -70,7 +66,7 @@ const Home = () => {
 
     const bombBoard = structuredClone(board);
 
-    setLevelsRowIndex(rowIndex);
+    // setLevelsRowIndex(rowIndex);
     setCountBombBoard(bombBoard);
     setUserInputs(board);
   };
@@ -111,7 +107,13 @@ const Home = () => {
     const isFirstClick = countBombBoard.flat().every((cell) => cell === 0);
 
     if (isFirstClick === true) {
-      const newBoard = initializeBoard(rowIndex, cellIndex, countBombBoard, levelInfo, levelsRowIndex);
+      const newBoard = initializeBoard(
+        rowIndex,
+        cellIndex,
+        countBombBoard,
+        levelInfo,
+        levelsRowIndex,
+      );
       setCountBombBoard(newBoard);
     }
 
@@ -145,8 +147,8 @@ const Home = () => {
             direction.map((row) => {
               const x = index + row[0];
               const y = rowIndex + row[1];
-              if (x < 0 || x > levels[levelsRowIndex].columnLength - 1) return;
-              if (y < 0 || y > levels[levelsRowIndex].rowLength - 1) return;
+              if (x < 0 || x > levelInfo.width - 1) return;
+              if (y < 0 || y > levelInfo.height - 1) return;
 
               if (countBombBoard[y][x] === 11 || countBombBoard[y][x] === 0) {
                 return;
@@ -171,7 +173,7 @@ const Home = () => {
   const RightClick = (e, rowIndex: number, cellIndex: number) => {
     e.preventDefault();
 
-    let count = 0;
+    // let count = 0;
     const newUserInputs = [...userInputs];
     if (newUserInputs[rowIndex][cellIndex] === 10) {
       newUserInputs[rowIndex][cellIndex] = 0;
@@ -179,15 +181,15 @@ const Home = () => {
       newUserInputs[rowIndex][cellIndex] = 10;
     }
 
-    for (const row of newUserInputs) {
-      for (const cell of row) {
-        if (cell === 10) {
-          count++;
-        }
-      }
-    }
+    // for (const row of newUserInputs) {
+    //   for (const cell of row) {
+    //     if (cell === 10) {
+    //       count++;
+    //     }
+    //   }
+    // }
     setUserInputs(newUserInputs);
-    setBombLength(10 - count);
+    // setBombLength(10 - count);
   };
 
   const resetState = () => {
@@ -197,12 +199,6 @@ const Home = () => {
     setUserInputs(initBoard);
     setCountBombBoard(newInitBoard);
   };
-  // const [levels, setLevels] = useState([
-  //   { name: 'beginner', bombLength: 10, rowLength: 9, columnLength: 9 },
-  //   { name: 'intermediate', bombLength: 40, rowLength: 16, columnLength: 16 },
-  //   { name: 'advanced', bombLength: 99, rowLength: 16, columnLength: 30 },
-  //   { name: 'custom', bombLength: 150, rowLength: 30, columnLength: 30 },
-  // ]);
 
   return (
     <>
@@ -211,28 +207,32 @@ const Home = () => {
           <ul style={{ listStyle: 'none', display: 'flex', gap: 20, justifyContent: 'center' }}>
             <li
               onClick={() => {
-                createBoard(9, 9, 10), setLevelInfo({ height: 9, width: 9, NumBomb: 10 });
+                createBoard(9, 9, 10),
+                  setLevelInfo({ height: 9, width: 9, NumBomb: 10, customMode: false });
               }}
             >
               beginner
             </li>
             <li
               onClick={() => {
-                createBoard(16, 16, 40), setLevelInfo({ height: 16, width: 16, NumBomb: 40 });
+                createBoard(16, 16, 40),
+                  setLevelInfo({ height: 16, width: 16, NumBomb: 40, customMode: false });
               }}
             >
               intermediate
             </li>
             <li
               onClick={() => {
-                createBoard(16, 30, 99), setLevelInfo({ height: 16, width: 30, NumBomb: 99 });
+                createBoard(16, 30, 99),
+                  setLevelInfo({ height: 16, width: 30, NumBomb: 99, customMode: false });
               }}
             >
               advanced
             </li>
             <li
               onClick={() => {
-                createBoard(30, 30, 150), setLevelInfo({ height: 30, width: 30, NumBomb: 150 });
+                createBoard(30, 30, 150),
+                  setLevelInfo({ height: 30, width: 30, NumBomb: 150, customMode: true });
               }}
             >
               custom
@@ -240,35 +240,32 @@ const Home = () => {
           </ul>
         </div>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          {levelsRowIndex === 3 ? (
+          {levelInfo.customMode ? (
             <div style={{ display: 'flex', gap: 20 }}>
               <label htmlFor="">
-                height{' '}
                 <input
                   type="text"
-                  value={cutomeFormValue.height}
+                  value={levelInfo.height}
                   onChange={(e) => {
-                    setCutomeFormValue({ ...cutomeFormValue, height: e.target.value });
+                    setLevelInfo({ ...levelInfo, height: Number(e.target.value) });
                   }}
                 />
               </label>
               <label htmlFor="">
-                width{' '}
                 <input
                   type="text"
-                  value={cutomeFormValue.width}
+                  value={levelInfo.width}
                   onChange={(e) => {
-                    setCutomeFormValue({ ...cutomeFormValue, width: e.target.value });
+                    setLevelInfo({ ...levelInfo, width: Number(e.target.value) });
                   }}
                 />
               </label>
               <label htmlFor="">
-                bombs{' '}
                 <input
                   type="text"
-                  value={cutomeFormValue.bomb}
+                  value={levelInfo.NumBomb}
                   onChange={(e) => {
-                    setCutomeFormValue({ ...cutomeFormValue, bomb: e.target.value });
+                    setLevelInfo({ ...levelInfo, NumBomb: Number(e.target.value) });
                   }}
                 />
               </label>
@@ -276,19 +273,7 @@ const Home = () => {
                 type="button"
                 value="update"
                 onClick={() => {
-                  setLevels([
-                    { name: 'beginner', bombLength: 10, rowLength: 9, columnLength: 9 },
-                    { name: 'intermediate', bombLength: 40, rowLength: 16, columnLength: 16 },
-                    { name: 'advanced', bombLength: 99, rowLength: 16, columnLength: 30 },
-                    {
-                      name: 'custom',
-                      bombLength: Number(cutomeFormValue.bomb),
-                      rowLength: Number(cutomeFormValue.height),
-                      columnLength: Number(cutomeFormValue.width),
-                    },
-                  ]);
-
-                  createBoard(3);
+                  createBoard(levelInfo.height, levelInfo.width, levelInfo.NumBomb);
                 }}
               />
             </div>
@@ -299,7 +284,13 @@ const Home = () => {
       </div>
       <div className={styles.container}>
         <div className={styles.matchInfos}>
-          <div>bomb: {bombLength}</div>
+          <div>
+            bomb:{' '}
+            {countBombBoard.flat().every((cell) => cell === 0)
+              ? levelInfo.NumBomb
+              : countBombBoard.flat().filter((cell) => cell === 11).length -
+                userInputs.flat().filter((cell) => cell === 10).length}
+          </div>
           <div
             className={styles.restartButton}
             style={{ backgroundPosition: '-330px' }}

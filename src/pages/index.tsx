@@ -13,6 +13,7 @@ const Home = () => {
     NumBomb: 10,
     customMode: false,
   });
+  const [isTimerActive, setIsTimerActive] = useState(false);
 
   const initBoard = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -67,39 +68,53 @@ const Home = () => {
     setUserInputs(board);
   };
 
-  const time = () => {
-    new Promise(() => {
-      setInterval(() => {
-        setTimeCount((prev) => prev + 1);
-      }, 1000);
-    });
-  };
+  // const time = () => {
+  //   new Promise(() => {
+  //     setInterval(() => {
+  //       setTimeCount((prev) => prev + 1);
+  //     }, 1000);
+  //   });
+  // };
+  //クリア判定
+  // useEffect(() => {
+  //   const bombPostionList: number[][] = [];
+  //   const checkList: number[] = [];
+  //   countBombBoard.map((row: number[], rowIndex: number) => {
+  //     row.map((cell, cellIndex) => {
+  //       if (cell === 11) {
+  //         bombPostionList.push([rowIndex, cellIndex]);
+  //       }
+  //     });
+  //   });
+
+  //   userInputs.map((row: number[], rowIndex: number) => {
+  //     row.map((cell, cellIndex) => {
+  //       if (bombPostionList.some(([y, x]) => y === rowIndex && x === cellIndex)) return;
+  //       if (cell === 0) {
+  //         checkList.push(cell);
+  //       }
+  //     });
+  //   });
+  //   if (checkList.length === 0) {
+  //     alert('finish');
+  //   }
+  // }, [userInputs]);
 
   useEffect(() => {
-    const bombPostionList: number[][] = [];
-    const checkList: number[] = [];
-    countBombBoard.map((row: number[], rowIndex: number) => {
-      row.map((cell, cellIndex) => {
-        if (cell === 11) {
-          bombPostionList.push([rowIndex, cellIndex]);
-        }
-      });
-    });
+    let time: number | undefined = undefined;
+    if (isTimerActive) {
+      time = window.setInterval(() => {
+        setTimeCount((prev) => prev + 1);
+      }, 1000);
+    } else if (isTimerActive === false) {
+        console.log("ff")
+        clearInterval(time);
 
-    userInputs.map((row: number[], rowIndex: number) => {
-      row.map((cell, cellIndex) => {
-        if (bombPostionList.some(([y, x]) => y === rowIndex && x === cellIndex)) return;
-        if (cell === 0) {
-          checkList.push(cell);
-        }
-      });
-    });
-    if (checkList.length === 0) {
-      alert('finish');
     }
-  }, [userInputs]);
+  }, [isTimerActive]);
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
+    console.log(countBombBoard);
     const isFirstClick = countBombBoard.flat().every((cell) => cell === 0);
     const newUserInputs = [...userInputs];
 
@@ -121,8 +136,6 @@ const Home = () => {
         newUserInputs[row[0]][row[1]] = 11;
       });
       setUserInputs(newUserInputs);
-
-      alert('fin');
     }
 
     if (countBombBoard[rowIndex][cellIndex] === 0) {
@@ -180,6 +193,7 @@ const Home = () => {
   const resetState = () => {
     const newInitBoard = structuredClone(initBoard);
     setTimeCount(0);
+    setIsTimerActive(false);
 
     setUserInputs(initBoard);
     setCountBombBoard(newInitBoard);
@@ -189,7 +203,15 @@ const Home = () => {
     <>
       <div>
         <div>
-          <ul style={{ listStyle: 'none', display: 'flex', gap: 20, justifyContent: 'center' }}>
+          <ul
+            style={{
+              listStyle: 'none',
+              display: 'flex',
+              gap: 20,
+              justifyContent: 'center',
+              color: 'white',
+            }}
+          >
             <li
               onClick={() => {
                 createBoard(9, 9, 10),
@@ -229,6 +251,7 @@ const Home = () => {
             <div style={{ display: 'flex', gap: 20 }}>
               <label htmlFor="">
                 <input
+                  className={styles.input}
                   type="text"
                   value={levelInfo.height}
                   onChange={(e) => {
@@ -238,6 +261,7 @@ const Home = () => {
               </label>
               <label htmlFor="">
                 <input
+                  className={styles.input}
                   type="text"
                   value={levelInfo.width}
                   onChange={(e) => {
@@ -247,6 +271,7 @@ const Home = () => {
               </label>
               <label htmlFor="">
                 <input
+                  className={styles.input}
                   type="text"
                   value={levelInfo.NumBomb}
                   onChange={(e) => {
@@ -255,6 +280,7 @@ const Home = () => {
                 />
               </label>
               <input
+                className={styles.button}
                 type="button"
                 value="update"
                 onClick={() => {
@@ -268,7 +294,7 @@ const Home = () => {
         </div>
       </div>
       <div className={styles.container}>
-        <div className={styles.matchInfos}>
+        <div className={styles.matchInfos} style={{ color: 'white' }}>
           <div>
             bomb:
             {countBombBoard.flat().every((cell) => cell === 0)
@@ -276,11 +302,26 @@ const Home = () => {
               : countBombBoard.flat().filter((cell) => cell === 11).length -
                 userInputs.flat().filter((cell) => cell === 10).length}
           </div>
-          <div
-            className={styles.restartButton}
-            style={{ backgroundPosition: '-330px' }}
-            onClick={() => window.location.reload()}
-          />
+          {levelInfo.NumBomb - userInputs.flat().filter((cell) => cell === 10).length === 0 ? (
+            <div
+              className={styles.restartButton}
+              style={{
+                backgroundPosition: '-360px',
+              }}
+              onClick={() => resetState()}
+            />
+          ) : (
+            <div
+              className={styles.restartButton}
+              style={{
+                backgroundPosition: !userInputs.flat().some((cell) => cell === 11)
+                  ? '-330px'
+                  : `-390px`,
+              }}
+              onClick={() => resetState()}
+            />
+          )}
+
           <div>time: {timeCount}</div>
         </div>
         <div className={styles.board}>
@@ -293,9 +334,10 @@ const Home = () => {
                   onClick={() => clickHandler(rowIndex, cellIndex)}
                   onContextMenu={(e) => RightClick(e, rowIndex, cellIndex)}
                   onMouseDown={() => {
-                    countBombBoard.flat().every((cell) => cell === 0) ? time() : '';
+                    countBombBoard.flat().every((cell) => cell === 0) ? setIsTimerActive(true) : '';
                   }}
                   style={{
+                    opacity: '0.6',
                     borderColor: cell === 0 ? '#fff #7f7f7f #7f7f7f #fff' : '',
                     borderWidth: cell === 0 ? 4 : '1.5px',
                     backgroundColor: cell === 11 ? 'red' : '',

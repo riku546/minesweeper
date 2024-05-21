@@ -50,3 +50,15 @@
   top: 2px;
   left: 2px;
 }
+
+.input {
+  padding: 5px;
+  border: 1px solid white;
+  border-radius: 8px;
+}
+
+.button {
+  padding: 5px, 20px;
+  border: 1px solid white;
+  border-radius: 8px;
+}

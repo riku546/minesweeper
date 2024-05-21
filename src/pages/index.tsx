@@ -256,7 +256,7 @@ const Home = () => {
               <label htmlFor="">
                 <input
                   className={styles.input}
-                  type="text"
+                  type="number"
                   value={levelInfo.height}
                   onChange={(e) => {
                     setLevelInfo({ ...levelInfo, height: Number(e.target.value) });
@@ -266,7 +266,7 @@ const Home = () => {
               <label htmlFor="">
                 <input
                   className={styles.input}
-                  type="text"
+                  type="number"
                   value={levelInfo.width}
                   onChange={(e) => {
                     setLevelInfo({ ...levelInfo, width: Number(e.target.value) });
@@ -276,7 +276,7 @@ const Home = () => {
               <label htmlFor="">
                 <input
                   className={styles.input}
-                  type="text"
+                  type="number"
                   value={levelInfo.NumBomb}
                   onChange={(e) => {
                     setLevelInfo({ ...levelInfo, NumBomb: Number(e.target.value) });

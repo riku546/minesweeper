@@ -5,7 +5,6 @@ export const initializeBoard = (
   cellIndex: number,
   countBombBoard: number[][],
   levelInfo:{height:number , width:number , NumBomb:number},
-  levelsRowIndex: number,
 ) => {
   const newCountBombBoard = [...countBombBoard];
   const Nums: number[][] = [];

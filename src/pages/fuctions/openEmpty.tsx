@@ -4,7 +4,6 @@ export const openEmptySquare = (
     cellIndex: number,
     results: number[][],
     levelInfo:{height:number , width:number , NumBomb:number},
-    levelsRowIndex: number,
     countBombBoard: number[][],
   ) => {
     const temporaryResult: number[][] = [];
@@ -25,6 +24,6 @@ export const openEmptySquare = (
     const CopyTemporaryResults = [...temporaryResult];
   
     CopyTemporaryResults.map((row: number[]) => {
-      openEmptySquare(direction, row[0], row[1], results, levelInfo, levelsRowIndex, countBombBoard);
+      openEmptySquare(direction, row[0], row[1], results, levelInfo,  countBombBoard);
     });
   };

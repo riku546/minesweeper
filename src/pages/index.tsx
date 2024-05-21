@@ -3,12 +3,10 @@ import styles from './index.module.css';
 import { direction } from './direction';
 import { initializeBoard } from './fuctions/Initialize';
 import { openEmptySquare } from './fuctions/openEmpty';
-import { count } from 'console';
 
 const Home = () => {
   const results: number[][] = [];
   const [timeCount, setTimeCount] = useState(0);
-  const [bombLength, setBombLength] = useState(10); //計算値にする
   const [levelInfo, setLevelInfo] = useState({
     height: 9,
     width: 9,
@@ -16,7 +14,6 @@ const Home = () => {
     customMode: false,
   });
 
-  const [levelsRowIndex, setLevelsRowIndex] = useState(0);
   const initBoard = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -66,7 +63,6 @@ const Home = () => {
 
     const bombBoard = structuredClone(board);
 
-    // setLevelsRowIndex(rowIndex);
     setCountBombBoard(bombBoard);
     setUserInputs(board);
   };
@@ -105,21 +101,27 @@ const Home = () => {
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
     const isFirstClick = countBombBoard.flat().every((cell) => cell === 0);
+    const newUserInputs = [...userInputs];
 
     if (isFirstClick === true) {
-      const newBoard = initializeBoard(
-        rowIndex,
-        cellIndex,
-        countBombBoard,
-        levelInfo,
-        levelsRowIndex,
-      );
+      const newBoard = initializeBoard(rowIndex, cellIndex, countBombBoard, levelInfo);
       setCountBombBoard(newBoard);
     }
 
-    const newUserInputs = [...userInputs];
-
     if (isFirstClick === false && countBombBoard[rowIndex][cellIndex] === 11) {
+      const results: number[][] = [];
+      countBombBoard.map((row, rowIndex) => {
+        row.map((cell, cellIndex) => {
+          if (cell === 11) {
+            results.push([rowIndex, cellIndex]);
+          }
+        });
+      });
+      results.map((row: number[]) => {
+        newUserInputs[row[0]][row[1]] = 11;
+      });
+      setUserInputs(newUserInputs);
+
       alert('fin');
     }
 
@@ -127,15 +129,7 @@ const Home = () => {
       const tL: number[][] = [];
       results.push([rowIndex, cellIndex]);
       //再帰関数
-      openEmptySquare(
-        direction,
-        rowIndex,
-        cellIndex,
-        results,
-        levelInfo,
-        levelsRowIndex,
-        countBombBoard,
-      );
+      openEmptySquare(direction, rowIndex, cellIndex, results, levelInfo, countBombBoard);
 
       for (const count of results) {
         newUserInputs[count[0]][count[1]] = 100;
@@ -173,7 +167,6 @@ const Home = () => {
   const RightClick = (e, rowIndex: number, cellIndex: number) => {
     e.preventDefault();
 
-    // let count = 0;
     const newUserInputs = [...userInputs];
     if (newUserInputs[rowIndex][cellIndex] === 10) {
       newUserInputs[rowIndex][cellIndex] = 0;
@@ -181,21 +174,13 @@ const Home = () => {
       newUserInputs[rowIndex][cellIndex] = 10;
     }
 
-    // for (const row of newUserInputs) {
-    //   for (const cell of row) {
-    //     if (cell === 10) {
-    //       count++;
-    //     }
-    //   }
-    // }
     setUserInputs(newUserInputs);
-    // setBombLength(10 - count);
   };
 
   const resetState = () => {
     const newInitBoard = structuredClone(initBoard);
     setTimeCount(0);
-    setBombLength(10);
+
     setUserInputs(initBoard);
     setCountBombBoard(newInitBoard);
   };
@@ -285,7 +270,7 @@ const Home = () => {
       <div className={styles.container}>
         <div className={styles.matchInfos}>
           <div>
-            bomb:{' '}
+            bomb:
             {countBombBoard.flat().every((cell) => cell === 0)
               ? levelInfo.NumBomb
               : countBombBoard.flat().filter((cell) => cell === 11).length -

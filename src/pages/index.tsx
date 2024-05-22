@@ -178,7 +178,7 @@ const Home = () => {
   };
 
   const RightClick = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     rowIndex: number,
     cellIndex: number,
   ) => {

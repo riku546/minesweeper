@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './index.module.css';
 
 export const direction = [
@@ -177,7 +177,7 @@ const Home = () => {
     setUserInputs(newUserInputs);
   };
 
-  const RightClick = (e: any, rowIndex: number, cellIndex: number) => {
+  const RightClick = (e:React.ChangeEvent<HTMLInputElement>, rowIndex: number, cellIndex: number) => {
     e.preventDefault();
 
     const newUserInputs = [...userInputs];

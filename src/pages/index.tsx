@@ -177,7 +177,7 @@ const Home = () => {
     setUserInputs(newUserInputs);
   };
 
-  const RightClick = (e, rowIndex: number, cellIndex: number) => {
+  const RightClick = (e: any, rowIndex: number, cellIndex: number) => {
     e.preventDefault();
 
     const newUserInputs = [...userInputs];

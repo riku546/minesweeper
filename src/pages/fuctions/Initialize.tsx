@@ -1,6 +1,6 @@
-import { direction } from "../direction";
+import  direction  from "../direction";
 
-export const initializeBoard = (
+ const initializeBoard = (
   rowIndex: number,
   cellIndex: number,
   countBombBoard: number[][],
@@ -43,3 +43,5 @@ export const initializeBoard = (
 
   return newCountBombBoard;
 };
+
+export default initializeBoard;

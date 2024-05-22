@@ -1,4 +1,4 @@
-export const openEmptySquare = (
+ const openEmptySquare = (
     direction: number[][],
     rowIndex: number,
     cellIndex: number,
@@ -27,3 +27,5 @@ export const openEmptySquare = (
       openEmptySquare(direction, row[0], row[1], results, levelInfo,  countBombBoard);
     });
   };
+
+  export default openEmptySquare;

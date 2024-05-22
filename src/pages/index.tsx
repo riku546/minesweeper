@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import styles from './index.module.css';
-import { direction } from './direction';
+import  direction  from './direction';
 
-import { initializeBoard } from './fuctions/Initialize';
-import { openEmptySquare } from './fuctions/openEmpty';
+import  initializeBoard  from './fuctions/Initialize';
+import  openEmptySquare  from './fuctions/openEmpty';
 
 const Home = () => {
   const results: number[][] = [];

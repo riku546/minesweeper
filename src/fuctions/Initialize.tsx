@@ -1,6 +1,5 @@
-import { direction } from '../index';
-
 const initializeBoard = (
+  direction: number[][],
   rowIndex: number,
   cellIndex: number,
   countBombBoard: number[][],

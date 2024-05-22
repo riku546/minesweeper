@@ -12,8 +12,8 @@ export const direction = [
   [-1, -1],
 ];
 
-import initializeBoard from './fuctions/Initialize';
-import openEmptySquare from './fuctions/openEmpty';
+import initializeBoard from '../fuctions/Initialize';
+import openEmptySquare from '../fuctions/openEmpty';
 
 const Home = () => {
   const results: number[][] = [];
@@ -119,7 +119,7 @@ const Home = () => {
     const newUserInputs = [...userInputs];
 
     if (isFirstClick === true) {
-      const newBoard = initializeBoard(rowIndex, cellIndex, countBombBoard, levelInfo);
+      const newBoard = initializeBoard(direction, rowIndex, cellIndex, countBombBoard, levelInfo);
       setCountBombBoard(newBoard);
     }
 

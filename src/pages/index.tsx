@@ -12,9 +12,8 @@ export const direction = [
   [-1, -1],
 ];
 
-
-import  initializeBoard  from './fuctions/Initialize';
-import  openEmptySquare  from './fuctions/openEmpty';
+import initializeBoard from './fuctions/Initialize';
+import openEmptySquare from './fuctions/openEmpty';
 
 const Home = () => {
   const results: number[][] = [];
@@ -26,8 +25,6 @@ const Home = () => {
     customMode: false,
   });
   const [isTimerActive, setIsTimerActive] = useState(false);
-
-
 
   const [userInputs, setUserInputs] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -102,21 +99,19 @@ const Home = () => {
   //   }
   // }, [userInputs]);
 
-
-
-//タイマー処理
+  //タイマー処理
   useEffect(() => {
-    let time = null
+    let time = null;
     if (isTimerActive) {
-
       time = setInterval(() => {
         setTimeCount((prev) => prev + 1);
       }, 1000);
-    } 
+    }
 
-    return() => {clearInterval(time)}
+    return () => {
+      clearInterval(time);
+    };
   }, [isTimerActive]);
-
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
     console.log(countBombBoard);
@@ -205,7 +200,7 @@ const Home = () => {
       board.push(row);
     }
 
-    const newBoard = structuredClone(board)
+    const newBoard = structuredClone(board);
 
     setTimeCount(0);
     setIsTimerActive(false);
@@ -237,7 +232,7 @@ const Home = () => {
             </li>
             <li
               onClick={() => {
-                createBoard(16, 16  ),
+                createBoard(16, 16),
                   setLevelInfo({ height: 16, width: 16, NumBomb: 40, customMode: false });
               }}
             >

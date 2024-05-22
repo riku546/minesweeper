@@ -1,10 +1,10 @@
-import  {direction}  from "../index";
+import { direction } from '../index';
 
- const initializeBoard = (
+const initializeBoard = (
   rowIndex: number,
   cellIndex: number,
   countBombBoard: number[][],
-  levelInfo:{height:number , width:number , NumBomb:number},
+  levelInfo: { height: number; width: number; NumBomb: number },
 ) => {
   const newCountBombBoard = [...countBombBoard];
   const Nums: number[][] = [];

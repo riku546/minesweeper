@@ -1,4 +1,4 @@
- const openEmptySquare = (
+const openEmptySquare = (
     direction: number[][],
     rowIndex: number,
     cellIndex: number,

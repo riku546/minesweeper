@@ -1,6 +1,17 @@
 import { useState, useEffect } from 'react';
 import styles from './index.module.css';
-import  direction  from './direction';
+
+export const direction = [
+  [-1, 0],
+  [-1, 1],
+  [0, 1],
+  [1, 1],
+  [1, 0],
+  [1, -1],
+  [0, -1],
+  [-1, -1],
+];
+
 
 import  initializeBoard  from './fuctions/Initialize';
 import  openEmptySquare  from './fuctions/openEmpty';

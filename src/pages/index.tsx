@@ -101,7 +101,7 @@ const Home = () => {
 
   //タイマー処理
   useEffect(() => {
-    let time = null;
+    let time:NodeJS.Timeout | undefined = undefined;
     if (isTimerActive) {
       time = setInterval(() => {
         setTimeCount((prev) => prev + 1);

@@ -177,7 +177,11 @@ const Home = () => {
     setUserInputs(newUserInputs);
   };
 
-  const RightClick = (e:React.ChangeEvent<HTMLInputElement>, rowIndex: number, cellIndex: number) => {
+  const RightClick = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    rowIndex: number,
+    cellIndex: number,
+  ) => {
     e.preventDefault();
 
     const newUserInputs = [...userInputs];

@@ -114,9 +114,8 @@ const Home = () => {
   }, [isTimerActive]);
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
-    console.log(countBombBoard);
     const isFirstClick = countBombBoard.flat().every((cell) => cell === 0);
-    const newUserInputs = [...userInputs];
+    const newUserInputs = structuredClone(userInputs);
 
     if (isFirstClick === true) {
       const newBoard = initializeBoard(direction, rowIndex, cellIndex, countBombBoard, levelInfo);
@@ -124,7 +123,6 @@ const Home = () => {
     }
 
     if (isFirstClick === false && countBombBoard[rowIndex][cellIndex] === 11) {
-      const results: number[][] = [];
       countBombBoard.map((row, rowIndex) => {
         row.map((cell, cellIndex) => {
           if (cell === 11) {
@@ -132,10 +130,20 @@ const Home = () => {
           }
         });
       });
+
+      console.log(newUserInputs);
+
       results.map((row: number[]) => {
-        newUserInputs[row[0]][row[1]] = 11;
+        if (rowIndex === row[0] && cellIndex === row[1]) {
+          newUserInputs[row[0]][row[1]] = 33;
+          console.log(newUserInputs);
+        } else {
+          newUserInputs[row[0]][row[1]] = 11;
+        }
       });
+
       setUserInputs(newUserInputs);
+      return;
     }
 
     if (countBombBoard[rowIndex][cellIndex] === 0) {
@@ -341,34 +349,39 @@ const Home = () => {
         <div className={styles.board}>
           {userInputs.map((row: number[], rowIndex: number) => (
             <div key={rowIndex} className={styles.row}>
-              {row.map((cell: number, cellIndex: number) => (
-                <div
-                  key={rowIndex - cellIndex}
-                  className={styles.cell}
-                  onClick={() => clickHandler(rowIndex, cellIndex)}
-                  onContextMenu={(e) => RightClick(e, rowIndex, cellIndex)}
-                  onMouseDown={() => {
-                    countBombBoard.flat().every((cell) => cell === 0) ? setIsTimerActive(true) : '';
-                  }}
-                  style={{
-                    opacity: '0.6',
-                    borderColor: cell === 0 ? '#fff #7f7f7f #7f7f7f #fff' : '',
-                    borderWidth: cell === 0 ? 4 : '1.5px',
-                    backgroundColor: cell === 11 ? 'red' : '',
-                  }}
-                >
-                  {
-                    <div
-                      className={styles.imageStyle}
-                      style={{
-                        visibility: cell === 0 ? 'hidden' : 'visible',
-                        backgroundPosition:
-                          cell === 0 ? `-1000px -1000px ` : `${-30 * (cell - 1)}px ,0px `,
-                      }}
-                    />
-                  }
-                </div>
-              ))}
+              {row.map((cell: number, cellIndex: number) =>
+                cell === 33 ? (
+                  <div style={{ backgroundColor: 'red'  , backgroundPosition:"-300px , 0px" ,  }} className={styles.imageStyle}/>
+                ) : (
+                  <div
+                    key={rowIndex - cellIndex}
+                    className={styles.cell}
+                    onClick={() => clickHandler(rowIndex, cellIndex)}
+                    onContextMenu={(e) => RightClick(e, rowIndex, cellIndex)}
+                    onMouseDown={() => {
+                      countBombBoard.flat().every((cell) => cell === 0)
+                        ? setIsTimerActive(true)
+                        : '';
+                    }}
+                    style={{
+                      opacity: '0.6',
+                      borderColor: cell === 0 ? '#fff #7f7f7f #7f7f7f #fff' : '',
+                      borderWidth: cell === 0 ? 4 : '1.5px',
+                    }}
+                  >
+                    {
+                      <div
+                        className={styles.imageStyle}
+                        style={{
+                          visibility: cell === 0 ? 'hidden' : 'visible',
+                          backgroundPosition:
+                            cell === 0 ? `-1000px -1000px ` : `${-30 * (cell - 1)}px ,0px `,
+                        }}
+                      />
+                    }
+                  </div>
+                ),
+              )}
             </div>
           ))}
         </div>

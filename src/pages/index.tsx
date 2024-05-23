@@ -14,6 +14,7 @@ export const direction = [
 
 import initializeBoard from '../fuctions/Initialize';
 import openEmptySquare from '../fuctions/openEmpty';
+import { count } from 'console';
 
 const Home = () => {
   const results: number[][] = [];
@@ -93,15 +94,16 @@ const Home = () => {
       });
     });
     if (checkList.length === 0) {
-      const board = [];
-      for (let i = 0; i < levelInfo.height; i++) {
-        const row = [];
-        for (let j = 0; j < levelInfo.width; j++) {
-          row.push(0);
+      const board: number[][] = structuredClone(countBombBoard);
+      while (true) {
+        const Rowrandom = Math.floor(Math.random() * levelInfo.height);
+        const Cellrandom = Math.floor(Math.random() * levelInfo.width);
+        if (countBombBoard[Rowrandom][Cellrandom] !== 11) {
+          board[Rowrandom][Cellrandom] = 1000;
+          break;
         }
-        board.push(row);
       }
-      board[0][0] = 1000;
+
       setCountBombBoard(board);
 
       setIsTimerActive(false);
@@ -119,11 +121,11 @@ const Home = () => {
 
     return () => {
       clearInterval(time);
-      setTimeCount(0);
     };
   }, [isTimerActive]);
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
+    console.log(countBombBoard);
     const isFirstClick = countBombBoard.flat().every((cell) => cell === 0);
     const newUserInputs = structuredClone(userInputs);
     const isGameFinish = newUserInputs.flat().some((cell) => cell === 11);
@@ -209,11 +211,10 @@ const Home = () => {
     cellIndex: number,
   ) => {
     e.preventDefault();
-    
-    
+
     const newUserInputs = [...userInputs];
     const isGameFinish = newUserInputs.flat().some((cell) => cell === 11);
-    if(isGameFinish) return;
+    if (isGameFinish) return;
     if (newUserInputs[rowIndex][cellIndex] === 10) {
       newUserInputs[rowIndex][cellIndex] = 0;
     } else {
@@ -260,6 +261,7 @@ const Home = () => {
                 createBoard(9, 9),
                   setLevelInfo({ height: 9, width: 9, NumBomb: 10, customMode: false });
                 setIsTimerActive(false);
+                setTimeCount(0);
               }}
             >
               beginner
@@ -269,6 +271,7 @@ const Home = () => {
                 createBoard(16, 16),
                   setLevelInfo({ height: 16, width: 16, NumBomb: 40, customMode: false });
                 setIsTimerActive(false);
+                setTimeCount(0);
               }}
             >
               intermediate
@@ -278,6 +281,7 @@ const Home = () => {
                 createBoard(16, 30),
                   setLevelInfo({ height: 16, width: 30, NumBomb: 99, customMode: false });
                 setIsTimerActive(false);
+                setTimeCount(0);
               }}
             >
               advanced
@@ -287,6 +291,7 @@ const Home = () => {
                 createBoard(30, 30),
                   setLevelInfo({ height: 30, width: 30, NumBomb: 150, customMode: true });
                 setIsTimerActive(false);
+                setTimeCount(0);
               }}
             >
               custom

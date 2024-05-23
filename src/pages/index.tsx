@@ -59,8 +59,6 @@ const Home = () => {
       }
       board.push(row);
     }
-    console.log(board);
-
     const bombBoard = structuredClone(board);
 
     setCountBombBoard(bombBoard);
@@ -75,29 +73,40 @@ const Home = () => {
   //   });
   // };
   //クリア判定
-  // useEffect(() => {
-  //   const bombPostionList: number[][] = [];
-  //   const checkList: number[] = [];
-  //   countBombBoard.map((row: number[], rowIndex: number) => {
-  //     row.map((cell, cellIndex) => {
-  //       if (cell === 11) {
-  //         bombPostionList.push([rowIndex, cellIndex]);
-  //       }
-  //     });
-  //   });
+  useEffect(() => {
+    const bombPostionList: number[][] = [];
+    const checkList: number[] = [];
+    countBombBoard.map((row: number[], rowIndex: number) => {
+      row.map((cell, cellIndex) => {
+        if (cell === 11) {
+          bombPostionList.push([rowIndex, cellIndex]);
+        }
+      });
+    });
 
-  //   userInputs.map((row: number[], rowIndex: number) => {
-  //     row.map((cell, cellIndex) => {
-  //       if (bombPostionList.some(([y, x]) => y === rowIndex && x === cellIndex)) return;
-  //       if (cell === 0) {
-  //         checkList.push(cell);
-  //       }
-  //     });
-  //   });
-  //   if (checkList.length === 0) {
-  //     alert('finish');
-  //   }
-  // }, [userInputs]);
+    userInputs.map((row: number[], rowIndex: number) => {
+      row.map((cell, cellIndex) => {
+        if (bombPostionList.some(([y, x]) => y === rowIndex && x === cellIndex)) return;
+        if (cell === 0) {
+          checkList.push(cell);
+        }
+      });
+    });
+    if (checkList.length === 0) {
+      const board = [];
+      for (let i = 0; i < levelInfo.height; i++) {
+        const row = [];
+        for (let j = 0; j < levelInfo.width; j++) {
+          row.push(0);
+        }
+        board.push(row);
+      }
+      board[0][0] = 1000;
+      setCountBombBoard(board);
+
+      setIsTimerActive(false);
+    }
+  }, [userInputs]);
 
   //タイマー処理
   useEffect(() => {
@@ -114,6 +123,7 @@ const Home = () => {
   }, [isTimerActive]);
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
+    console.table(countBombBoard)
     const isFirstClick = countBombBoard.flat().every((cell) => cell === 0);
     const newUserInputs = structuredClone(userInputs);
 
@@ -131,18 +141,17 @@ const Home = () => {
         });
       });
 
-      console.log(newUserInputs);
 
       results.map((row: number[]) => {
         if (rowIndex === row[0] && cellIndex === row[1]) {
           newUserInputs[row[0]][row[1]] = 33;
-          console.log(newUserInputs);
         } else {
           newUserInputs[row[0]][row[1]] = 11;
         }
       });
 
       setUserInputs(newUserInputs);
+      setIsTimerActive(false);
       return;
     }
 
@@ -329,8 +338,7 @@ const Home = () => {
               </div>
 
               <div className={styles.resetButtonStyle}>
-                {levelInfo.NumBomb - userInputs.flat().filter((cell) => cell === 10).length ===
-                0 ? (
+                {countBombBoard.flat().some((cell) => cell === 1000) ? (
                   <div
                     className={styles.restartButton}
                     style={{

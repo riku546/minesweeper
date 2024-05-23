@@ -119,13 +119,22 @@ const Home = () => {
 
     return () => {
       clearInterval(time);
+      setTimeCount(0);
     };
   }, [isTimerActive]);
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
-    console.table(countBombBoard)
     const isFirstClick = countBombBoard.flat().every((cell) => cell === 0);
     const newUserInputs = structuredClone(userInputs);
+    const isGameFinish = newUserInputs.flat().some((cell) => cell === 11);
+
+    if (newUserInputs[rowIndex][cellIndex] === 10) {
+      return;
+    }
+
+    if (isGameFinish === true) {
+      return;
+    }
 
     if (isFirstClick === true) {
       const newBoard = initializeBoard(direction, rowIndex, cellIndex, countBombBoard, levelInfo);
@@ -141,7 +150,6 @@ const Home = () => {
         });
       });
 
-
       results.map((row: number[]) => {
         if (rowIndex === row[0] && cellIndex === row[1]) {
           newUserInputs[row[0]][row[1]] = 33;
@@ -152,6 +160,7 @@ const Home = () => {
 
       setUserInputs(newUserInputs);
       setIsTimerActive(false);
+
       return;
     }
 
@@ -247,6 +256,7 @@ const Home = () => {
               onClick={() => {
                 createBoard(9, 9),
                   setLevelInfo({ height: 9, width: 9, NumBomb: 10, customMode: false });
+                setIsTimerActive(false);
               }}
             >
               beginner
@@ -255,6 +265,7 @@ const Home = () => {
               onClick={() => {
                 createBoard(16, 16),
                   setLevelInfo({ height: 16, width: 16, NumBomb: 40, customMode: false });
+                setIsTimerActive(false);
               }}
             >
               intermediate
@@ -263,6 +274,7 @@ const Home = () => {
               onClick={() => {
                 createBoard(16, 30),
                   setLevelInfo({ height: 16, width: 30, NumBomb: 99, customMode: false });
+                setIsTimerActive(false);
               }}
             >
               advanced
@@ -271,6 +283,7 @@ const Home = () => {
               onClick={() => {
                 createBoard(30, 30),
                   setLevelInfo({ height: 30, width: 30, NumBomb: 150, customMode: true });
+                setIsTimerActive(false);
               }}
             >
               custom

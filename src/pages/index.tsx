@@ -143,6 +143,8 @@ const Home = () => {
       });
 
       setUserInputs(newUserInputs);
+      setIsTimerActive(false)
+
       return;
     }
 

@@ -209,8 +209,11 @@ const Home = () => {
     cellIndex: number,
   ) => {
     e.preventDefault();
-
+    
+    
     const newUserInputs = [...userInputs];
+    const isGameFinish = newUserInputs.flat().some((cell) => cell === 11);
+    if(isGameFinish) return;
     if (newUserInputs[rowIndex][cellIndex] === 10) {
       newUserInputs[rowIndex][cellIndex] = 0;
     } else {

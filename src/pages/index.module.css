@@ -39,14 +39,14 @@
 .matchInfos {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  width: 100%;
-  height: 70px;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 70px;
+  margin-bottom: 10px;
+  background-color: #c6c6c6;
   border: 5px solid;
   border-color: #808080 #fff #fff #808080;
-  background-color: #c6c6c6;
-  margin-bottom: 10px;
 }
 
 .restartButton {
@@ -81,8 +81,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 20px solid #c6c6c6;
   background-color: #c6c6c6;
+  border: 20px solid #c6c6c6;
 }
 
 .boderStyle {

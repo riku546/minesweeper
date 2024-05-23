@@ -18,6 +18,8 @@
 .board {
   display: flex;
   flex-direction: column;
+  border: 10px solid;
+  border-color: #808080 white white #808080;
 }
 
 .row {
@@ -35,14 +37,25 @@
 }
 
 .matchInfos {
-  display: flex;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 100%;
+  height: 70px;
+  align-items: center;
+  justify-content: center;
+  border: 5px solid;
+  border-color: #808080 #fff #fff #808080;
+  background-color: #c6c6c6;
+  margin-bottom: 10px;
 }
 
 .restartButton {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
+  background-color: #c6c6c6;
   background-image: url('~/src/assets/images/icons.png');
+  border: 5px solid;
+  border-color: #fff #808080 #808080 #fff;
 }
 
 .restartButton :hover {
@@ -61,4 +74,56 @@
   padding: 5px, 20px;
   border: 1px solid white;
   border-radius: 8px;
+}
+
+.boardStyle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 20px solid #c6c6c6;
+  background-color: #c6c6c6;
+}
+
+.boderStyle {
+  border: 5px solid;
+  border-color: #fff #808080 #808080 #fff;
+}
+
+.bombCounter {
+  font-size: 30px;
+  color: red;
+}
+
+.timeCount {
+  font-size: 30px;
+  color: red;
+}
+
+.resetButtonStyle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeCountStyle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  margin-right: 5px;
+  background-color: black;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+}
+
+.bombCounterStyle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  margin-left: 5px;
+  background-color: black;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
 }

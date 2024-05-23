@@ -316,74 +316,86 @@ const Home = () => {
         </div>
       </div>
       <div className={styles.container}>
-        <div className={styles.matchInfos} style={{ color: 'white' }}>
-          <div>
-            bomb:
-            {countBombBoard.flat().every((cell) => cell === 0)
-              ? levelInfo.NumBomb
-              : countBombBoard.flat().filter((cell) => cell === 11).length -
-                userInputs.flat().filter((cell) => cell === 10).length}
-          </div>
-          {levelInfo.NumBomb - userInputs.flat().filter((cell) => cell === 10).length === 0 ? (
-            <div
-              className={styles.restartButton}
-              style={{
-                backgroundPosition: '-360px',
-              }}
-              onClick={() => resetState()}
-            />
-          ) : (
-            <div
-              className={styles.restartButton}
-              style={{
-                backgroundPosition: !userInputs.flat().some((cell) => cell === 11)
-                  ? '-330px'
-                  : `-390px`,
-              }}
-              onClick={() => resetState()}
-            />
-          )}
+        <div className={styles.boderStyle}>
+          <div className={styles.boardStyle}>
+            <div className={styles.matchInfos} style={{ color: 'white' }}>
+              <div className={styles.bombCounterStyle}>
+                <div className={styles.bombCounter}>
+                  {countBombBoard.flat().every((cell) => cell === 0)
+                    ? levelInfo.NumBomb
+                    : countBombBoard.flat().filter((cell) => cell === 11).length -
+                      userInputs.flat().filter((cell) => cell === 10).length}
+                </div>
+              </div>
 
-          <div>time: {timeCount}</div>
-        </div>
-        <div className={styles.board}>
-          {userInputs.map((row: number[], rowIndex: number) => (
-            <div key={rowIndex} className={styles.row}>
-              {row.map((cell: number, cellIndex: number) =>
-                cell === 33 ? (
-                  <div style={{ backgroundColor: 'red'  , backgroundPosition:"-300px , 0px" ,  }} className={styles.imageStyle}/>
+              <div className={styles.resetButtonStyle}>
+                {levelInfo.NumBomb - userInputs.flat().filter((cell) => cell === 10).length ===
+                0 ? (
+                  <div
+                    className={styles.restartButton}
+                    style={{
+                      backgroundPosition: '-360px',
+                    }}
+                    onClick={() => resetState()}
+                  />
                 ) : (
                   <div
-                    key={rowIndex - cellIndex}
-                    className={styles.cell}
-                    onClick={() => clickHandler(rowIndex, cellIndex)}
-                    onContextMenu={(e) => RightClick(e, rowIndex, cellIndex)}
-                    onMouseDown={() => {
-                      countBombBoard.flat().every((cell) => cell === 0)
-                        ? setIsTimerActive(true)
-                        : '';
-                    }}
+                    className={styles.restartButton}
                     style={{
-                      opacity: '0.6',
-                      borderColor: cell === 0 ? '#fff #7f7f7f #7f7f7f #fff' : '',
-                      borderWidth: cell === 0 ? 4 : '1.5px',
+                      backgroundPosition: !userInputs.flat().some((cell) => cell === 11)
+                        ? '-330px'
+                        : `-390px`,
                     }}
-                  >
-                    {
-                      <div
-                        className={styles.imageStyle}
-                        style={{
-                          visibility: cell === 0 ? 'hidden' : 'visible',
-                          backgroundPosition:
-                            cell === 0 ? `-1000px -1000px ` : `${-30 * (cell - 1)}px ,0px `,
-                        }}
-                      />
-                    }
-                  </div>
-                ),
-              )}
+                    onClick={() => resetState()}
+                  />
+                )}
+              </div>
+              <div className={styles.timeCountStyle}>
+                <div className={styles.timeCount}> {timeCount}</div>
+              </div>
             </div>
-          ))}
+            <div className={styles.board}>
+              {userInputs.map((row: number[], rowIndex: number) => (
+                <div key={rowIndex} className={styles.row}>
+                  {row.map((cell: number, cellIndex: number) =>
+                    cell === 33 ? (
+                      <div
+                        style={{ backgroundColor: 'red', backgroundPosition: '-300px , 0px' }}
+                        className={styles.imageStyle}
+                      />
+                    ) : (
+                      <div
+                        key={rowIndex - cellIndex}
+                        className={styles.cell}
+                        onClick={() => clickHandler(rowIndex, cellIndex)}
+                        onContextMenu={(e) => RightClick(e, rowIndex, cellIndex)}
+                        onMouseDown={() => {
+                          countBombBoard.flat().every((cell) => cell === 0)
+                            ? setIsTimerActive(true)
+                            : '';
+                        }}
+                        style={{
+                          borderColor: cell === 0 ? '#fff #7f7f7f #7f7f7f #fff' : '',
+                          borderWidth: cell === 0 ? 4 : '1.5px',
+                        }}
+                      >
+                        {
+                          <div
+                            className={styles.imageStyle}
+                            style={{
+                              visibility: cell === 0 ? 'hidden' : 'visible',
+                              backgroundPosition:
+                                cell === 0 ? `-1000px -1000px ` : `${-30 * (cell - 1)}px ,0px `,
+                            }}
+                          />
+                        }
+                      </div>
+                    ),
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </>

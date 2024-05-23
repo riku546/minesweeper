@@ -14,7 +14,6 @@ export const direction = [
 
 import initializeBoard from '../fuctions/Initialize';
 import openEmptySquare from '../fuctions/openEmpty';
-import { count } from 'console';
 
 const Home = () => {
   const results: number[][] = [];
@@ -129,14 +128,13 @@ const Home = () => {
     const isFirstClick = countBombBoard.flat().every((cell) => cell === 0);
     const newUserInputs = structuredClone(userInputs);
     const isGameFinish = newUserInputs.flat().some((cell) => cell === 11);
+    const isClear = newUserInputs.flat().some((cell)=> cell === 1000)
 
-    if (newUserInputs[rowIndex][cellIndex] === 10) {
+    if (newUserInputs[rowIndex][cellIndex] === 10 || isGameFinish === true || isClear ) {
       return;
     }
 
-    if (isGameFinish === true) {
-      return;
-    }
+
 
     if (isFirstClick === true) {
       const newBoard = initializeBoard(direction, rowIndex, cellIndex, countBombBoard, levelInfo);
@@ -212,9 +210,11 @@ const Home = () => {
   ) => {
     e.preventDefault();
 
+    console.log("w")
     const newUserInputs = [...userInputs];
     const isGameFinish = newUserInputs.flat().some((cell) => cell === 11);
     if (isGameFinish) return;
+
     if (newUserInputs[rowIndex][cellIndex] === 10) {
       newUserInputs[rowIndex][cellIndex] = 0;
     } else {
@@ -352,7 +352,7 @@ const Home = () => {
               <div className={styles.bombCounterStyle}>
                 <div className={styles.bombCounter}>
                   {countBombBoard.flat().every((cell) => cell === 0)
-                    ? levelInfo.NumBomb
+                    ? levelInfo.NumBomb - userInputs.flat().filter((cell) => cell === 10).length
                     : countBombBoard.flat().filter((cell) => cell === 11).length -
                       userInputs.flat().filter((cell) => cell === 10).length}
                 </div>

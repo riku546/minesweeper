@@ -128,11 +128,10 @@ const Home = () => {
     const isFirstClick = countBombBoard.flat().every((cell) => cell === 0);
     const newUserInputs = structuredClone(userInputs);
     const isGameFinish = newUserInputs.flat().some((cell) => cell === 11);
-    const isClear = newUserInputs.flat().some((cell)=> cell === 1000)
+    const isClear = countBombBoard.flat().some((cell)=> cell === 1000)
 
-    if (newUserInputs[rowIndex][cellIndex] === 10 || isGameFinish === true || isClear ) {
-      return;
-    }
+    if (newUserInputs[rowIndex][cellIndex] === 10 || isGameFinish === true || isClear )return;
+  
 
 
 
@@ -289,7 +288,7 @@ const Home = () => {
             <li
               onClick={() => {
                 createBoard(30, 30),
-                  setLevelInfo({ height: 30, width: 30, NumBomb: 150, customMode: true });
+                  setLevelInfo({ height: 30, width: 30, NumBomb: 80, customMode: true });
                 setIsTimerActive(false);
                 setTimeCount(0);
               }}

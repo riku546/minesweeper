@@ -7,7 +7,6 @@
   min-height: 100vh;
   padding: 0 0.5rem;
   margin-top: 50px;
-
 }
 
 .imageStyle {
@@ -34,6 +33,7 @@
   justify-content: center;
   width: 30px;
   height: 30px;
+  background: url('~/src/assets/images/icons.png') no-repeat;
   background-color: #c6c6c6;
   border: 1px solid;
 }

@@ -14,6 +14,7 @@ export const direction = [
 
 import initializeBoard from '../fuctions/Initialize';
 import openEmptySquare from '../fuctions/openEmpty';
+import checkClear from '../fuctions/checkClear';
 
 const Home = () => {
   const results: number[][] = [];
@@ -74,25 +75,9 @@ const Home = () => {
   // };
   //クリア判定
   useEffect(() => {
-    const bombPostionList: number[][] = [];
-    const checkList: number[] = [];
     const newUserInputs = structuredClone(userInputs);
-    countBombBoard.map((row: number[], rowIndex: number) => {
-      row.map((cell, cellIndex) => {
-        if (cell === 11) {
-          bombPostionList.push([rowIndex, cellIndex]);
-        }
-      });
-    });
+    const checkList = checkClear(countBombBoard, userInputs);
 
-    userInputs.map((row: number[], rowIndex: number) => {
-      row.map((cell, cellIndex) => {
-        if (bombPostionList.some(([y, x]) => y === rowIndex && x === cellIndex)) return;
-        if (cell === 0) {
-          checkList.push(cell);
-        }
-      });
-    });
     if (checkList.length === 0) {
       const board: number[][] = structuredClone(countBombBoard);
       while (true) {
@@ -100,20 +85,11 @@ const Home = () => {
         const Cellrandom = Math.floor(Math.random() * levelInfo.width);
         if (countBombBoard[Rowrandom][Cellrandom] !== 11) {
           board[Rowrandom][Cellrandom] = 1000;
-          newUserInputs.map((row, rowIndex) => {
-            row.map((cell, cellIndex) => {
-              if (cell === 0) {
-                newUserInputs[rowIndex][cellIndex] = 10;
-              }
-            });
-          });
           break;
         }
       }
 
       setCountBombBoard(board);
-      setUserInputs(newUserInputs);
-
       setIsTimerActive(false);
     }
   }, [userInputs]);
@@ -133,13 +109,16 @@ const Home = () => {
   }, [isTimerActive]);
 
   const clickHandler = (rowIndex: number, cellIndex: number) => {
-    console.log(countBombBoard);
     const isFirstClick = countBombBoard.flat().every((cell) => cell === 0);
     const newUserInputs = structuredClone(userInputs);
     const isGameFinish = newUserInputs.flat().some((cell) => cell === 11);
-    const isClear = countBombBoard.flat().some((cell) => cell === 1000);
+    const isCleared = countBombBoard.flat().some((cell) => cell === 1000);
 
-    if (newUserInputs[rowIndex][cellIndex] === 10 || isGameFinish === true || isClear) return;
+    console.log(countBombBoard);
+
+    if (newUserInputs[rowIndex][cellIndex] === 10 || isGameFinish === true || isCleared) {
+      return;
+    }
 
     if (isFirstClick === true) {
       const newBoard = initializeBoard(direction, rowIndex, cellIndex, countBombBoard, levelInfo);
@@ -240,6 +219,8 @@ const Home = () => {
     }
 
     const newBoard = structuredClone(board);
+    console.log(newBoard);
+    console.log(board);
 
     setTimeCount(0);
     setIsTimerActive(false);
@@ -356,10 +337,12 @@ const Home = () => {
             <div className={styles.matchInfos} style={{ color: 'white' }}>
               <div className={styles.bombCounterStyle}>
                 <div className={styles.bombCounter}>
-                  {countBombBoard.flat().every((cell) => cell === 0)
-                    ? levelInfo.NumBomb - userInputs.flat().filter((cell) => cell === 10).length
-                    : countBombBoard.flat().filter((cell) => cell === 11).length -
-                      userInputs.flat().filter((cell) => cell === 10).length}
+                  {levelInfo.NumBomb - userInputs.flat().filter((cell) => cell === 0).length === 0
+                    ? 0
+                    : countBombBoard.flat().every((cell) => cell === 0)
+                      ? levelInfo.NumBomb - userInputs.flat().filter((cell) => cell === 10).length
+                      : countBombBoard.flat().filter((cell) => cell === 11).length -
+                        userInputs.flat().filter((cell) => cell === 10).length}
                 </div>
               </div>
 
@@ -411,6 +394,12 @@ const Home = () => {
                         style={{
                           borderColor: cell === 0 ? '#fff #7f7f7f #7f7f7f #fff' : '',
                           borderWidth: cell === 0 ? 4 : '1.5px',
+                          backgroundPosition:
+                            levelInfo.NumBomb -
+                              userInputs.flat().filter((cell) => cell === 0).length ===
+                              0 && countBombBoard[rowIndex][cellIndex] === 11
+                              ? '-270px'
+                              : '30px',
                         }}
                       >
                         {

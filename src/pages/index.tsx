@@ -76,6 +76,7 @@ const Home = () => {
   useEffect(() => {
     const bombPostionList: number[][] = [];
     const checkList: number[] = [];
+    const newUserInputs = structuredClone(userInputs);
     countBombBoard.map((row: number[], rowIndex: number) => {
       row.map((cell, cellIndex) => {
         if (cell === 11) {
@@ -99,11 +100,19 @@ const Home = () => {
         const Cellrandom = Math.floor(Math.random() * levelInfo.width);
         if (countBombBoard[Rowrandom][Cellrandom] !== 11) {
           board[Rowrandom][Cellrandom] = 1000;
+          newUserInputs.map((row, rowIndex) => {
+            row.map((cell, cellIndex) => {
+              if (cell === 0) {
+                newUserInputs[rowIndex][cellIndex] = 10;
+              }
+            });
+          });
           break;
         }
       }
 
       setCountBombBoard(board);
+      setUserInputs(newUserInputs);
 
       setIsTimerActive(false);
     }

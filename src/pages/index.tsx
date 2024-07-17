@@ -66,16 +66,8 @@ const Home = () => {
     setUserInputs(board);
   };
 
-  // const time = () => {
-  //   new Promise(() => {
-  //     setInterval(() => {
-  //       setTimeCount((prev) => prev + 1);
-  //     }, 1000);
-  //   });
-  // };
   //クリア判定
   useEffect(() => {
-    const newUserInputs = structuredClone(userInputs);
     const checkList = checkClear(countBombBoard, userInputs);
 
     if (checkList.length === 0) {
@@ -108,23 +100,23 @@ const Home = () => {
     };
   }, [isTimerActive]);
 
+                      //クリックしたところのボードの座標(y座標 x座標)
   const clickHandler = (rowIndex: number, cellIndex: number) => {
+    //計算値
     const isFirstClick = countBombBoard.flat().every((cell) => cell === 0);
     const newUserInputs = structuredClone(userInputs);
     const isGameFinish = newUserInputs.flat().some((cell) => cell === 11);
     const isCleared = countBombBoard.flat().some((cell) => cell === 1000);
 
-    console.log(countBombBoard);
+    
+    if (newUserInputs[rowIndex][cellIndex] === 10 || isGameFinish || isCleared) return;
 
-    if (newUserInputs[rowIndex][cellIndex] === 10 || isGameFinish === true || isCleared) {
-      return;
-    }
-
-    if (isFirstClick === true) {
+    //ボードの初期化（爆弾と周りの爆弾数をセットする）
+    if (isFirstClick) {
       const newBoard = initializeBoard(direction, rowIndex, cellIndex, countBombBoard, levelInfo);
       setCountBombBoard(newBoard);
     }
-
+    //爆弾をクリックしたときの処理（ゲームオーバー時の処理）
     if (isFirstClick === false && countBombBoard[rowIndex][cellIndex] === 11) {
       countBombBoard.map((row, rowIndex) => {
         row.map((cell, cellIndex) => {
